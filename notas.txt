@@ -1,0 +1,31 @@
+bablrc: es para que el javascript actual ande en navegadores viejos (me chupa un huevo pero bueno)
+webpack.config: 
+carpeta routes: para crear las rutas o urls que tendrá el servidor, así como los modelos de la BD
+carpeta models: contiene archivos de como van a lucir los datos dentro de mongoDB
+carpeta public: esta carpeta, a través del servidor express, siempre la enviamos al navegador. Acá se coloca todo el
+    código de Vue transformado (en javascript, html y css)
+carpeta app: es el código del cliente (frontend: vue, javascript y eso)
+
+
+
+NPMs:
+npm init --yes: para iniciar el servidor en la carpeta actual
+
+npm install:
+express: instala express
+nodemon: para no tener que cerrar el servidor (con ctrl+C) cada vez que actualizas el codigo. Hay que meterlo
+         en package.json (en scripts. Se llama "dev")
+morgan: cuando recibas peticiones del navegador en el servidor, el servidor te pueda mostrar qué peticiones
+        ha pedido el navegador
+mongoose: tener disponible una biblioteca que se va a conectar a mongoDB de manera sencilla y proporciona
+          una forma de modelar los datos
+webpack: se instala y se agrega a packagejson en script
+babel-loader: para traducir código a javascript viejo
+babel-preset-env: para traducir código a javascript viejo
+vue-loader: para traducir código a javascript viejo
+vue-template-compiler: para traducir código a javascript viejo
+
+
+ejecutar servidor:
+node src/index.js
+npm run dev: cuando instalás nodemon
