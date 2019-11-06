@@ -2,25 +2,22 @@
     <div>
 
         <div class="container">
+            <h4>Historia clínica de paciente</h4>
             <div class="row pt-5">
                 <div class="col-md-5">
-                    <div class="card">
-                        <div class="card-body">
-                            <form @submit.prevent="sendTask">
-                                <div class="row">
-                                    <input type="text" placeholder="Motivo de la consulta" class="form-control">
-                                </div>
-                                <label for="fConsulta" class="col">Fecha de la consulta</label>
-                                <input type="date" id="fConsulta" class="col form-control">
-                                <template v-if="edit === false">
-                                    <button class="btn btn-primary btn-block">Send</button>
-                                </template>
-                                <template v-else>
-                                    <button class="btn btn-primary btn-block">Update</button>
-                                </template>
-                            </form>
+                    <form @submit.prevent="sendTask">
+                        <div class="row">
+                            <input type="text" placeholder="Motivo de la consulta" class="form-control">
                         </div>
-                    </div>
+                        <label for="fConsulta" class="col">Fecha de la consulta</label>
+                        <input type="date" id="fConsulta" class="col form-control">
+                        <template v-if="edit === false">
+                            <button class="btn btn-primary btn-block">Send</button>
+                        </template>
+                        <template v-else>
+                            <button class="btn btn-primary btn-block">Update</button>
+                        </template>
+                    </form>
                 </div>
                 <div v-if="seccion==='probando'" class="col-md-7">
                     <table class="table table-bordered">

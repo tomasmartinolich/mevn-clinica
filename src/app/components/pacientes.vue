@@ -1,44 +1,44 @@
 <template>
     <div>
-
         <div class="container">
+
             <div class="row pt-5">
-                <div class="col-md-5">
-                    <div class="card">
-                        <div class="card-body">
-                            <form @submit.prevent="sendTask">
-                                <div class="row">
-                                    <div class="col">
-                                        <input type="text" v-model="task.nombre" placeholder="Nombre" class="form-control">
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" v-model="task.apellido" placeholder="Apellido" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="number" placeholder="DNI" v-model="task.DNI" class="form-control">
-                                </div>
-                                <label for="fNacimiento" class="col">Fecha de Nacimiento</label>
-                                <input type="date" id="fNacimiento" v-model="task.fNacimiento" class="col form-control">
-                                <input type="text" placeholder="Cobertura" v-model="task.cobertura" class="form-control col">
-                                <label for="selectPediatras">Pediatra</label>
-                                <select id="selectPediatras" v-model="task.pediatra" class="form-control">
-                                    <option>Cachito</option>
-                                    <option>Ernesto</option>
-                                </select>
-                                <input type="text" placeholder="Dirección" v-model="task.direccion" class="form-control">
-                                <input type="number" placeholder="Teléfono" v-model="task.telefono" class="form-control">
-                                <template v-if="edit === false">
-                                    <button class="btn btn-primary btn-block">Send</button>
-                                </template>
-                                <template v-else>
-                                    <button class="btn btn-primary btn-block">Update</button>
-                                </template>
-                            </form>
+                <div class="col-md-5" v-if="formPaciente">
+                    <form @submit.prevent="sendTask">
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" v-model="task.nombre" placeholder="Nombre" class="form-control">
+                            </div>
+                            <div class="col">
+                                <input type="text" v-model="task.apellido" placeholder="Apellido" class="form-control">
+                            </div>
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <input type="number" placeholder="DNI" v-model="task.DNI" class="form-control">
+                        </div>
+                        <label for="fNacimiento" class="col">Fecha de Nacimiento</label>
+                        <input type="date" id="fNacimiento" v-model="task.fNacimiento" class="col form-control">
+                        <input type="text" placeholder="Cobertura" v-model="task.cobertura" class="form-control col">
+                        <label for="selectPediatras">Pediatra</label>
+                        <select id="selectPediatras" v-model="task.pediatra" class="form-control">
+                            <option>Cachito</option>
+                            <option>Ernesto</option>
+                        </select>
+                        <input type="text" placeholder="Dirección" v-model="task.direccion" class="form-control">
+                        <input type="number" placeholder="Teléfono" v-model="task.telefono" class="form-control">
+                        <template v-if="edit === false">
+                            <button class="btn btn-primary">Aceptar</button>
+                        </template>
+                        <template v-else>
+                            <button class="btn btn-primary">Actualizar</button>
+                        </template>    
+                    </form>
+                        <button class="btn btn-secondary" @click="formPaciente = !formPaciente">Cancelar</button>
                 </div>
-                <div class="col-md-7">
+
+                <!-- TABLA PACIENTES -->
+                <div class="col-md-7" v-if="!formPaciente">
+                    <button type="button" class="btn btn-primary" @click="showFormPacientes">Nuevo paciente</button>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -52,10 +52,13 @@
                                 <td>{{task.DNI}}</td>
                                 <td>
                                     <button @click="editTask(task._id)" class="btn btn-success">
-                                        Edit
+                                        Editar
                                     </button>
                                     <button @click="deleteTask(task._id)" class="btn btn-danger">
-                                        Delete
+                                        Eliminar
+                                    </button>
+                                    <button class="btn btn-info">
+                                        Historia clínica
                                     </button>
                                 </td>
                             </tr>
@@ -64,7 +67,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -91,12 +93,17 @@
                 tasks: [],
                 edit: false,
                 taskToEdit: '',
+                formPaciente: false
             }
         },
         created() {
             this.getTasks()
         },
         methods: {
+            showFormPacientes(){
+                this.task = new Task()
+                this.formPaciente = true
+            },
             sendTask() {
                 if(this.edit === false) {
                     fetch('/api/tasks', {
@@ -128,6 +135,7 @@
                 }
 
                 this.task = new Task()
+                this.formPaciente = false
             },
             getTasks() {
                 fetch('/api/tasks')
@@ -151,6 +159,7 @@
                 })
             },
             editTask(id) {
+                this.formPaciente = true
                 fetch('/api/tasks/' +id)
                     .then(res => res.json())
                     .then(data => {
