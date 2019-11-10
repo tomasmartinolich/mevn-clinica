@@ -1,8 +1,11 @@
 <template>
     <div id="app">        
         <navBar/>
+        <!--
         <pacientes v-if="seccion==='pacientes'"/>
         <consultas v-else-if="seccion==='consultas'"/>
+        -->
+        <router-view/>
     </div>
 </template>
 

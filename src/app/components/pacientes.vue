@@ -57,9 +57,12 @@
                                     <button @click="deleteTask(task._id)" class="btn btn-danger">
                                         Eliminar
                                     </button>
-                                    <button class="btn btn-info">
-                                        Historia clínica
-                                    </button>
+                                    <router-link :to="{ name: 'paciente', params: {id: task.DNI} }">
+                                        <button class="btn btn-info">
+                                          Historia clínica
+                                        </button>
+                                    </router-link>
+                                    
                                 </td>
                             </tr>
                         </tbody>
@@ -101,6 +104,7 @@
         },
         methods: {
             showFormPacientes(){
+                this.edit = false
                 this.task = new Task()
                 this.formPaciente = true
             },

@@ -16,6 +16,7 @@ app.use(express.json());        //cada vez que recibimos un json del navegador, 
 
 //Routes
 app.use('/api/tasks', require('./routes/tasks'));
+app.use('/api/consultas', require('./routes/consultas'));
 
 //Static files (maneras de enviar archivos al frontend/navegador) (sería lo de la carpeta public)
 app.use(express.static(__dirname + '/public'));         // __dirname te tira la dirección exacta donde está este archivo

@@ -6,8 +6,8 @@
             <a href="/" class="navbar-brand">CEDYT</a>
         </div>
         <ul class="nav navbar-nav row">
-            <li class="active col"><a href="#">Pacientes</a></li>
-            <li class="active col"><a href="#">Consultas</a></li>
+            <router-link to="/">Pacientes</router-link>
+            <router-link to="/paciente/3456">Consultas</router-link>
         </ul>   
     </nav>
 

@@ -1,16 +1,36 @@
 <template>
     <div>
-
         <div class="container">
-            <h4>Historia clínica de paciente</h4>
+            <h4>Historia clínica de {{ $route.params.id }}</h4>
             <div class="row pt-5">
                 <div class="col-md-5">
-                    <form @submit.prevent="sendTask">
-                        <div class="row">
-                            <input type="text" placeholder="Motivo de la consulta" class="form-control">
-                        </div>
+                    <form @submit.prevent="sendConsulta">
                         <label for="fConsulta" class="col">Fecha de la consulta</label>
-                        <input type="date" id="fConsulta" class="col form-control">
+                        <input type="date" v-model="consulta.fConsulta" id="fConsulta" class="col form-control">
+                         <div class="row">
+                            <input type="text" v-model="consulta.motivo" placeholder="Motivo de la consulta" class="form-control">
+                        </div>
+                        <input type="text" v-model="consulta.enfermedadActual" placeholder="Enfermedad actual" class="form-control">
+                        <div class="form-group">
+                            <label for="antecedentesPersonales">Antecedentes personales</label>
+                            <textarea class="form-control" v-model="consulta.antecPersonales" id="antecedentesPersonales" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="antecedentesFamiliares">Antecedentes familiares</label>
+                            <textarea class="form-control" v-model="consulta.antecFamiliares" id="antecedentesFamiliares" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="examenFisico">Examen físico</label>
+                            <textarea class="form-control" v-model="consulta.examenFisico" id="examenFisic" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="Conducta">Conducta</label>
+                            <textarea class="form-control" v-model="consulta.conducta" id="Conducta" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="Observaciones">Observaciones</label>
+                            <textarea class="form-control" v-model="consulta.observaciones" id="Observaciones" rows="3"></textarea>
+                        </div>
                         <template v-if="edit === false">
                             <button class="btn btn-primary btn-block">Send</button>
                         </template>
@@ -19,7 +39,7 @@
                         </template>
                     </form>
                 </div>
-                <div v-if="seccion==='probando'" class="col-md-7">
+                <div class="col-md-7">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -28,21 +48,22 @@
                                 <th>Motivo de consulta</th>
                             </tr>
                         </thead>
-                        <!--
+                        
                         <tbody>
                             <tr v-for="consulta of consultas">
-                                <td>{{consulta.apellido + " " + task.nombre}}</td>
-                                <td>{{task.DNI}}</td>
+                                <td>{{$route.params.id}}</td>
+                                <td>{{consulta.fConsulta}}</td>
+                                <td>{{consulta.motivo}}</td>
                                 <td>
-                                    <button @click="editTask(task._id)" class="btn btn-success">
+                                    <button @click="editConsulta(consulta._id)" class="btn btn-success">
                                         Edit
                                     </button>
-                                    <button @click="deleteTask(task._id)" class="btn btn-danger">
+                                    <button @click="deleteConsulta(consulta._id)" class="btn btn-danger">
                                         Delete
                                     </button>
                                 </td>
                             </tr>
-                        </tbody> -->
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -54,7 +75,8 @@
 <script>
 
     class Consulta {
-        constructor(fConsulta, motivo, enfermedadActual, antecPersonales, antecFamiliares, examenFisico, conducta, observaciones) {
+        constructor(paciente, fConsulta, motivo, enfermedadActual, antecPersonales, antecFamiliares, examenFisico, conducta, observaciones) {
+            this.paciente = 0
             this.fConsulta = fConsulta
             this.motivo = motivo
             this.enfermedadActual = enfermedadActual
@@ -74,6 +96,7 @@
                 consultas: [],
                 edit: false,
                 consultaToEdit: '',
+                paciente: this.$route.params.id
             }
         },
         created() {
@@ -82,7 +105,7 @@
         methods: {
             sendConsulta() {
                 if(this.edit === false) {
-                    fetch('/api/consultas', {
+                    fetch('/api/consultas/' + this.paciente, {
                         method: 'POST',
                         body: JSON.stringify(this.consulta),
                         headers: {
@@ -95,7 +118,7 @@
                             this.getConsultas()
                         })
                 } else {
-                    fetch('/api/consultas/' + this.consultaToEdit, {
+                    fetch('/api/consultas/' + this.paciente + '/' + this.consultaToEdit, {
                         method: 'PUT',
                         body: JSON.stringify(this.consulta),
                         headers: {
@@ -113,15 +136,14 @@
                 this.consulta = new Consulta()
             },
             getConsultas() {
-                fetch('/api/consultas')
+                fetch('/api/consultas/' + this.paciente)
                     .then(res => res.json())
                     .then(data => {
                         this.consultas = data
-                        console.log(this.consultas)
                     })
             },
-            deleteTask(id) {
-                fetch('/api/consultas/' + id, {
+            deleteConsulta(id) {
+                fetch('/api/consultas/' + this.paciente + '/' + id, {
                     method: 'DELETE',
                     headers: {
                         'Accept': 'application/json',
@@ -134,7 +156,7 @@
                 })
             },
             editConsulta(id) {
-                fetch('/api/consultas/' +id)
+                fetch('/api/consultas/' + this.paciente + '/' +id)
                     .then(res => res.json())
                     .then(data => {
                         this.consulta = new Consulta(this.fConsulta, this.motivo, this.enfermedadActual, this.antecPersonales, this.antecFamiliares, this.examenFisico, this.conducta, this.observaciones)
