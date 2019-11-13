@@ -1,11 +1,11 @@
 <template>
-    <div id="app">        
-        <navBar/>
-        <!--
-        <pacientes v-if="seccion==='pacientes'"/>
-        <consultas v-else-if="seccion==='consultas'"/>
-        -->
-        <router-view/>
+    <div id="app">   
+        <div class="row"><navBar/></div>     
+        <div class="row">
+            <div class="col-10"><router-view/></div>       
+            <div class="col-2"><salaEspera/></div>
+        </div>
+        
     </div>
 </template>
 
@@ -14,13 +14,15 @@
 import navBar from './components/navBar.vue';
 import pacientes from './components/pacientes.vue';
 import consultas from './components/consultas.vue';
+import salaEspera from './components/salaEspera.vue';
 
 export default {
     name: 'App',
     components: {
         navBar,
         pacientes,
-        consultas
+        consultas,
+        salaEspera
     },
     data() {
         return {

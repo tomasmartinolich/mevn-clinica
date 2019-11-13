@@ -2,54 +2,84 @@
     <div>
         <div class="container">
 
-            <div class="row pt-5">
-                <div class="col-md-5" v-if="formPaciente">
+            <div class="row">
+                <div class="col" v-if="formPaciente">
                     <form @submit.prevent="sendTask">
                         <div class="row">
-                            <div class="col">
-                                <input type="text" v-model="task.nombre" placeholder="Nombre" class="form-control">
+                            <div class="form-group col-3">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" id="nombre" v-model="task.nombre" class="form-control">
                             </div>
-                            <div class="col">
-                                <input type="text" v-model="task.apellido" placeholder="Apellido" class="form-control">
+                            <div class="form-group col-3">
+                                <label for="apellido">Apellido</label>
+                                <input type="text" id="apellido" v-model="task.apellido" class="form-control">
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="DNI">DNI</label>
+                                <input type="DNI" id="DNI" v-model="task.DNI" class="form-control">
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="fNacimiento">Fecha de Nacimiento</label>
+                                <input type="date" id="fNacimiento" v-model="task.fNacimiento" class="col form-control">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <input type="number" placeholder="DNI" v-model="task.DNI" class="form-control">
+                        
+                        <div class="row">
+                            <div class="form-group col-3">
+                                <label for="direccion">Dirección</label>
+                                <input type="text" id="direccion" v-model="task.direccion" class="form-control">
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="telefono">Teléfono</label>
+                                <input type="number" id="telefono" v-model="task.telefono" class="form-control">
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="cobertura">Cobertura</label>
+                                <input type="text" id="cobertura" v-model="task.cobertura" class="form-control col">
+                            </div>
                         </div>
-                        <label for="fNacimiento" class="col">Fecha de Nacimiento</label>
-                        <input type="date" id="fNacimiento" v-model="task.fNacimiento" class="col form-control">
-                        <input type="text" placeholder="Cobertura" v-model="task.cobertura" class="form-control col">
-                        <label for="selectPediatras">Pediatra</label>
-                        <select id="selectPediatras" v-model="task.pediatra" class="form-control">
-                            <option>Cachito</option>
-                            <option>Ernesto</option>
-                        </select>
-                        <input type="text" placeholder="Dirección" v-model="task.direccion" class="form-control">
-                        <input type="number" placeholder="Teléfono" v-model="task.telefono" class="form-control">
+                        <div class="row">
+                            <div class="form-group col-3">
+                                <label for="selectPediatras">Pediatra</label>
+                                <select id="selectPediatras" v-model="task.pediatra" class="form-control">
+                                    <option>Juan</option>
+                                    <option>Carlos</option>
+                                </select>
+                            </div>
+                        </div>
+                        
                         <template v-if="edit === false">
-                            <button class="btn btn-primary">Aceptar</button>
+                            <button class="btn btn-primary btn-block">Aceptar</button>
                         </template>
                         <template v-else>
-                            <button class="btn btn-primary">Actualizar</button>
+                            <button class="btn btn-primary btn-block">Actualizar</button>
                         </template>    
+                        
                     </form>
-                        <button class="btn btn-secondary" @click="formPaciente = !formPaciente">Cancelar</button>
+                        <button class="btn btn-secondary btn-block" @click="formPaciente = !formPaciente">Cancelar</button>
                 </div>
 
                 <!-- TABLA PACIENTES -->
-                <div class="col-md-7" v-if="!formPaciente">
+                <div class="col" v-if="!formPaciente">
                     <button type="button" class="btn btn-primary" @click="showFormPacientes">Nuevo paciente</button>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr class="text-center">
                                 <th>Paciente</th>
                                 <th>DNI</th>
+                                <th>Pediatra</th>
+                                <th>Dirección</th>
+                                <th>Teléfono</th>
+                                <th>Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="task of tasks">
                                 <td>{{task.apellido + " " + task.nombre}}</td>
                                 <td>{{task.DNI}}</td>
+                                <td>{{task.pediatra}}</td>
+                                <td>{{task.direccion}}</td>
+                                <td>{{task.telefono}}</td>
                                 <td>
                                     <button @click="editTask(task._id)" class="btn btn-success">
                                         Editar

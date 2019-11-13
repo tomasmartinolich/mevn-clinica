@@ -1,16 +1,27 @@
 <template>
     <div>
         <div class="container">
-            <h4>Historia clínica de {{ $route.params.id }}</h4>
-            <div class="row pt-5">
-                <div class="col-md-5">
+            <div class="row-2 text-center">
+                <h1>Historia clínica de {{ $route.params.id }}</h1>
+            </div>
+            <router-link to="/"><div class="btn btn-secondary">Volver a pacientes</div></router-link>
+            <div class="row">
+                <div class="col" v-if="formConsulta">
                     <form @submit.prevent="sendConsulta">
-                        <label for="fConsulta" class="col">Fecha de la consulta</label>
-                        <input type="date" v-model="consulta.fConsulta" id="fConsulta" class="col form-control">
-                         <div class="row">
-                            <input type="text" v-model="consulta.motivo" placeholder="Motivo de la consulta" class="form-control">
+                        <div class="row">
+                            <div class="form-group col-3">
+                                <label for="fConsulta" class="col">Fecha de la consulta</label>
+                                <input type="date" v-model="consulta.fConsulta" id="fConsulta" class="col form-control">
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="motivo" class="col">Motivo de la consulta</label>
+                                <input type="text" id="motivo" v-model="consulta.motivo" class="form-control">
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="enfActual" class="col">Enfermedad actual</label>
+                                <input type="text" id="enfActual" v-model="consulta.enfermedadActual" class="form-control">
+                            </div>
                         </div>
-                        <input type="text" v-model="consulta.enfermedadActual" placeholder="Enfermedad actual" class="form-control">
                         <div class="form-group">
                             <label for="antecedentesPersonales">Antecedentes personales</label>
                             <textarea class="form-control" v-model="consulta.antecPersonales" id="antecedentesPersonales" rows="3"></textarea>
@@ -38,14 +49,19 @@
                             <button class="btn btn-primary btn-block">Update</button>
                         </template>
                     </form>
+                    <button class="btn btn-secondary btn-block" @click="formConsulta = !formConsulta">Cancelar</button>
                 </div>
-                <div class="col-md-7">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
+            </div>
+            <div class="row">
+                <div class="col" v-if="!formConsulta">
+                    <button type="button" class="btn btn-primary" @click="showFormConsulta">Nueva consulta</button>
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr class="text-center">
                                 <th>Paciente</th>
                                 <th>Fecha de consulta</th>
                                 <th>Motivo de consulta</th>
+                                <th>Opciones</th>
                             </tr>
                         </thead>
                         
@@ -96,6 +112,7 @@
                 consultas: [],
                 edit: false,
                 consultaToEdit: '',
+                formConsulta: false,
                 paciente: this.$route.params.id
             }
         },
@@ -103,6 +120,11 @@
             this.getConsultas()
         },
         methods: {
+            showFormConsulta(){
+                this.edit = false
+                this.consulta = new Consulta()
+                this.formConsulta = true
+            },
             sendConsulta() {
                 if(this.edit === false) {
                     fetch('/api/consultas/' + this.paciente, {
@@ -159,7 +181,7 @@
                 fetch('/api/consultas/' + this.paciente + '/' +id)
                     .then(res => res.json())
                     .then(data => {
-                        this.consulta = new Consulta(this.fConsulta, this.motivo, this.enfermedadActual, this.antecPersonales, this.antecFamiliares, this.examenFisico, this.conducta, this.observaciones)
+                        this.consulta = new Consulta(this.paciente, this.fConsulta, this.motivo, this.enfermedadActual, this.antecPersonales, this.antecFamiliares, this.examenFisico, this.conducta, this.observaciones)
                         this.consultaToEdit = data._id
                         this.edit = true
                     })
