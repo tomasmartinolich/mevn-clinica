@@ -19,6 +19,7 @@ router.get('/:id', async (req, res) => {
     res.json(task);
 });
 
+
 //las rutas post son para que el navegador pueda enviar peticiones al servidor y el servidor los tome y almacene
 //almacenar datos
 router.post('/', async (req, res) => {
@@ -45,5 +46,6 @@ router.delete('/:id', async (req, res) => {
         status: 'Task removed'
     });
 });
+
 
 module.exports = router;        //se exporta para poder usarlo en otras partes de la aplicación

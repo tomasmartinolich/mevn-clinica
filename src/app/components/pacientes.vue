@@ -92,6 +92,7 @@
                                           Historia clínica
                                         </button>
                                     </router-link>
+                                    <button @click="getSpecificTask(task._id)">Espera</button>
                                     
                                 </td>
                             </tr>
@@ -115,18 +116,22 @@
             this.DNI = DNI
             this.direccion = direccion
             this.telefono = telefono
+            this.salaEspera = false
         }
     }
 
     export default {
         name: 'pacientes',
+ //       props: ['listaEspera'],
         data() {
             return {
                 task: new Task(),
                 tasks: [],
+                taskToList: [],
                 edit: false,
                 taskToEdit: '',
-                formPaciente: false
+                formPaciente: false,
+                probandoListaEspera: []
             }
         },
         created() {
@@ -176,7 +181,13 @@
                     .then(res => res.json())
                     .then(data => {
                         this.tasks = data
-                        console.log(this.tasks)
+                    })
+            },
+            getSpecificTask(id) {
+                fetch('/api/tasks/'+id)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.taskToList = data
                     })
             },
             deleteTask(id) {
@@ -201,6 +212,26 @@
                         this.taskToEdit = data._id
                         this.edit = true
                     })
+            }
+        }, watch: {
+            taskToList: function(){
+                if (!Array.isArray(this.taskToList)) {
+                    this.taskToList.salaEspera = true
+                    fetch('/api/tasks/' + this.taskToList._id, {
+                            method: 'PUT',
+                            body: JSON.stringify(this.taskToList),
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-type': 'application/json'
+                            }
+                        })
+                        .then(res => res.json())
+                        .then(this.taskToList = [])
+                        /* .then(data => {
+                            this.getTasks()
+                            this.edit = false
+                        })*/
+                }
             }
         }
     }

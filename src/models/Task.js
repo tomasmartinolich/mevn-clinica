@@ -9,21 +9,8 @@ const Task = new Schema({        //este esquema dice a mongo cómo van a lucir l
     fNacimiento: Date,
     DNI: Number,
     direccion: String,
-    telefono: Number
+    telefono: Number,
+    salaEspera: Boolean
 });
 
-
-/*
-const Consulta = new Schema({
-    fConsulta: Date,
-    motivo: String,
-    enfermedadActual: String,
-    antecPersonales: String,
-    antecFamiliares: String,
-    examenFisico: String,
-    conducta: String,
-    observaciones: String
-})*/
-
 module.exports = mongoose.model('Task', Task);
-//module.exports = mongoose.model('Consulta', Consulta);
