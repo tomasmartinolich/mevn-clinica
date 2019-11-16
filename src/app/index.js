@@ -7,12 +7,14 @@ import App from './App.vue';
 
 import pacientes from './components/pacientes.vue';
 import consultas from './components/consultas.vue';
+import login from './components/login.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
     {path: '/', component: pacientes},
-    {path: '/paciente/:id', name:'paciente', component: consultas, props: true}
+    {path: '/paciente/:id', name:'paciente', component: consultas, props: true},
+    {path: '/login', name: 'login', component: login}
 ];
 
 const router = new VueRouter({

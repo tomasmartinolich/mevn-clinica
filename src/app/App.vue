@@ -1,12 +1,11 @@
 <template>
     <div id="app">   
-        <div class="row"><navBar/></div>     
-        <div class="row">
+        <navBar/> 
        <!--     <button @click="agregaUno">Prueba lista</button> -->
+        <div class="container-fluid row">
             <div class="col-10"><router-view/></div>       
-            <div class="col-2"><salaEspera/></div>
+            <div class="col-2"><salaEspera/></div>  
         </div>
-        
     </div>
 </template>
 
@@ -16,11 +15,13 @@ import navBar from './components/navBar.vue';
 import pacientes from './components/pacientes.vue';
 import consultas from './components/consultas.vue';
 import salaEspera from './components/salaEspera.vue';
+import login from './components/login.vue';
 
 export default {
     name: 'App',
     components: {
         navBar,
+        login,
         pacientes,
         consultas,
         salaEspera

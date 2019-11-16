@@ -92,7 +92,7 @@
                                           Historia clínica
                                         </button>
                                     </router-link>
-                                    <button @click="getSpecificTask(task._id)">Espera</button>
+                                    <button class="btn btn-success" @click="getSpecificTask(task._id)">Espera</button>
                                     
                                 </td>
                             </tr>
