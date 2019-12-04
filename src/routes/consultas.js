@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router(); 
 
 const Consulta = require('../models/Consulta'); 
+const Paciente = require('../models/Task'); 
 
 //recibir datos
 router.get('/', async (req, res) => {  
@@ -9,9 +10,21 @@ router.get('/', async (req, res) => {
     res.json(consultas);   
 });
 
-//busca un doc. por id
+//busca un paciente por id
 router.get('/:id', async (req, res) => {
     const consulta = await Consulta.find({'paciente': req.params.id});
+    res.json(consulta);
+});
+
+//busca los datos completos del paciente
+router.get('/getPaciente/:id', async (req, res) => {
+    const paciente = await Paciente.findOne({'DNI': req.params.id});
+    res.json(paciente);
+});
+
+//buscar una consulta en particular
+router.get('/consulta/:id', async (req, res) => {
+    const consulta = await Consulta.findById(req.params.id);
     res.json(consulta);
 });
 

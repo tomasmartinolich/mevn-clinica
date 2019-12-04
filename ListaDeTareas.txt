@@ -1,9 +1,9 @@
 PRIORIDAD:
-1) Hacer que el registro/login funcionen
-2) Crear pagina de perfil de usuario
-3) Arreglar el edit de consulta
-4) VER consulta, VER paciente
-5) Hacer que la sala de espera se modifique en tiempo real
+# Hacer que el registro/login funcionen
+# Crear sección turnos, con un calendario para cada usuario que muestre los turnos programados y horarios disponibles
+# Hacer que la sala de espera se modifique en tiempo real
+# F.Nac calcula EDAD, mostrar edad en tabla pacientes
+# Antecedentes va en tabla pacientes, en la consulta solo se muestra
 
 OTROS:
 Agregar filtros/paginación/búsqueda a las tablas

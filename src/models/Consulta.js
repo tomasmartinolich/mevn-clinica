@@ -6,8 +6,6 @@ const Consulta = new Schema({
     fConsulta: Date,
     motivo: String,
     enfermedadActual: String,
-    antecPersonales: String,
-    antecFamiliares: String,
     examenFisico: String,
     conducta: String,
     observaciones: String

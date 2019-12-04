@@ -40,12 +40,13 @@ router.put('/:id', async (req, res) => {
 });
 
 //eliminar datos
+/*
 router.delete('/:id', async (req, res) => {
     await Task.findByIdAndRemove(req.params.id);
     res.json({
         status: 'Task removed'
     });
 });
-
+*/
 
 module.exports = router;        //se exporta para poder usarlo en otras partes de la aplicación

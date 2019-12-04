@@ -4,7 +4,7 @@
        <!--     <button @click="agregaUno">Prueba lista</button> -->
         <div class="container-fluid row">
             <div class="col-10"><router-view/></div>       
-            <div class="col-2"><salaEspera/></div>  
+            <div class="col-2 py-md-5"><salaEspera/></div>  
         </div>
     </div>
 </template>
