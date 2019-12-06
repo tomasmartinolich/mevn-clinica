@@ -9,6 +9,9 @@
                 <router-link to="/">
                     <button type="button" class="btn btn-dark col">Pacientes</button>
                 </router-link>
+                <router-link to="/turnos">
+                    <button type="button" class="btn btn-dark col">Turnos</button>
+                </router-link>
                 <router-link to="/login">
                     <button type="button" class="btn btn-dark col">Iniciar sesión</button>
                 </router-link>

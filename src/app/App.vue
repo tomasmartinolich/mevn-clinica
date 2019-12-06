@@ -16,6 +16,7 @@ import pacientes from './components/pacientes.vue';
 import consultas from './components/consultas.vue';
 import salaEspera from './components/salaEspera.vue';
 import login from './components/login.vue';
+import turnos from './components/turnos.vue';
 
 export default {
     name: 'App',
@@ -24,6 +25,7 @@ export default {
         login,
         pacientes,
         consultas,
+        turnos,
         salaEspera
     },
     data() {
