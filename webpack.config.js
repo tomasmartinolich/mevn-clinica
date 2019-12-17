@@ -20,7 +20,11 @@ module.exports = {
                 use: {
                     loader: 'vue-loader'
                 }
-            }
+            },
+            {
+                test: /\.css$/i,
+                use: ['css-loader'],
+              },
         ]
     },
     plugins: [

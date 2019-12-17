@@ -41,7 +41,7 @@
                     <label for="password2">Repetir contraseña</label>
                     <input type="password" id="password2" placeholder="Repita la contraseña ingresada" class="form-control">
                 </div>
-                <button type="button" class="btn btn-success btn-block">Registrar</button>
+                <button class="btn btn-success btn-block">Registrar</button>
             </form>
             <button class="btn btn-secondary btn-block" @click="formSwitch()">Cancelar</button>
         </div>
@@ -72,7 +72,17 @@ export default {
 
         },
         register(){
-
+            console.log("HOLA")
+            fetch('/api/users/registro', {
+                method: 'POST',
+                body: JSON.stringify(this.user),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(this.user = new User())
         },
         formSwitch(){
             this.loginForm = !this.loginForm

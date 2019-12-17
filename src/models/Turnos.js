@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const Turno = new Schema({   
-    dia: Date,
-    hora: Number,
-    paciente: String,
+    dia: Number,
+    mes: Number,
+    anio: Number,
+    hora: String,
+    descripcion: String,
     user: String
 });
 

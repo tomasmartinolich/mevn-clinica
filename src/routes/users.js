@@ -2,6 +2,22 @@ const express = require('express');
 const users = express.Router(); 
 const User = require('../models/User'); 
 
+
+users.post('/registro', async (req, res) => {
+    const user = new User(req.body);
+    await user.save();
+    res.json({
+        status: 'Usuario registrado'
+    });
+});      
+
+users.get('/', async (req, res) => {
+    const users = await User.find().select('nombre apellido');   
+    res.json(users);   
+});
+
+
+/*
 users.post('/registro', (req, res) => {
     const userData = {
         nombre: req.body.nombre,
@@ -53,5 +69,6 @@ users.post('/login', (req, res) => {
         res.send('error: ' + err)
     })
 });
+*/
 
 module.exports = users; 
