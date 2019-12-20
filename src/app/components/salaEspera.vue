@@ -19,15 +19,19 @@
 </template>
 
 <script>
+import io from 'socket.io-client';
+
 export default {
   //  props:['listaEspera'],
     data(){
         return {
-            enEspera: []
+            enEspera: [],
+            socket : io('localhost:3000')
         }  
     },
     mounted() {
         this.getListaEspera()
+        
     },
     methods: {
         getListaEspera() {   
@@ -38,6 +42,7 @@ export default {
                 })
         },
         quitarDeEspera(paciente){
+            this.socket.emit('modificarSalaDeEspera', { hello: 'world' });
             fetch('/api/listaEspera/' + paciente._id, {
                 method: 'PUT',
                 body: JSON.stringify(this.task),
@@ -49,6 +54,16 @@ export default {
             .then(res => res.json())
             .then(this.enEspera.pop(paciente))
         }
+    },
+    sockets: {
+        connect(){
+                console.log("CONECTADO!!")
+            },
+        actualizarLista(){
+            console.log("ACTUALIZO LA LISTA")
+            this.getListaEspera();
+        }
+        
     }
 }
 </script>

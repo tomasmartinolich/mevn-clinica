@@ -3,6 +3,33 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 
 const app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+server.listen(3000)
+
+io.on('connection', function (socket) {
+    // socket.emit('actualizarLista', { hello: 'world' });
+    
+    socket.on('modificarSalaDeEspera', function(socket){
+     console.log("WWWWWWWWWWe")
+    });
+    socket.emit('actualizarLista', { hello: 'world' });
+})
+      
+
+
+io.on('modificarSalaDeEspera', function(socket){
+    console.log("WWWWWWWWWWe")
+    socket.emit('actualizarLista', { hello: 'world' });
+})
+
+
+
+
+
+
+
 mongoose.connect('mongodb://localhost/mevn-database')
     .then(db => console.log("DB is connected."))
     .catch(err => console.error(err));
@@ -25,6 +52,8 @@ app.use('/api/turnos', require('./routes/turnos'))
 app.use(express.static(__dirname + '/public'));         // __dirname te tira la dirección exacta donde está este archivo
 
 //Server is listening
+/*
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
 });
+*/
