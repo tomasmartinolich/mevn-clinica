@@ -22,7 +22,6 @@
 import io from 'socket.io-client';
 
 export default {
-  //  props:['listaEspera'],
     data(){
         return {
             enEspera: [],
@@ -30,19 +29,20 @@ export default {
         }  
     },
     mounted() {
-        this.getListaEspera()
-        
+        this.getListaEspera()      
     },
     methods: {
         getListaEspera() {   
             fetch('/api/listaEspera')
                 .then(res => res.json())
                 .then(data => {
+                    console.log("get lista espera:")
                         this.enEspera = data
                 })
         },
-        quitarDeEspera(paciente){
-            this.socket.emit('modificarSalaDeEspera', { hello: 'world' });
+        quitarDeEspera(paciente){      
+            console.log("quitar 1:")
+            console.log(paciente) 
             fetch('/api/listaEspera/' + paciente._id, {
                 method: 'PUT',
                 body: JSON.stringify(this.task),
@@ -52,16 +52,36 @@ export default {
                 }
             })
             .then(res => res.json())
-            .then(this.enEspera.pop(paciente))
+            .then(this.getListaEspera)
+            .then(this.socket.emit('quitarPaciente', paciente))
+           // .then(this.enEspera.pop(paciente))
         }
     },
     sockets: {
+        /*
         connect(){
-                console.log("CONECTADO!!")
-            },
+        },*/
         actualizarLista(){
-            console.log("ACTUALIZO LA LISTA")
             this.getListaEspera();
+        },
+        quitarDeLista(data){
+            console.log("quitar 2:")
+            console.log(data)
+            this.enEspera.pop(data)
+        },
+        agregarALista(paciente){
+            //CHEQUEA QUE NO ESTÉ EN LA SALA PARA AGREGARLO
+            let arrayPaciente1 = Object.values(paciente) //convierte el paciente de obj. a array
+            let pacienteEncontrado = false
+            this.enEspera.forEach(function(item){
+                let arrayPaciente2 = Object.values(item)
+                if (arrayPaciente2[0] === arrayPaciente1[0]) {
+                    pacienteEncontrado = true;
+                }
+            })
+            if (!pacienteEncontrado) {
+                this.enEspera.push(paciente)
+            }       
         }
         
     }

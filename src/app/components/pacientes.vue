@@ -199,7 +199,7 @@
 </template>
 
 <script>
-
+import io from 'socket.io-client';
     class Task {
         constructor(nombre, apellido, cobertura, nAfiliado, plan, antecFamiliares, antecPersonales, pediatra, fNacimiento, DNI, localidad, direccion, telefono) {
             this.nombre = nombre
@@ -224,6 +224,7 @@
  //       props: ['listaEspera'],
         data() {
             return {
+                socket : io('localhost:3000'),
                 task: new Task(),
                 tasks: [],
                 taskToList: [],
@@ -295,8 +296,6 @@
                     .then(data => {
                         this.task = new Task(data.nombre, data.apellido, data.cobertura, data.nAfiliado, data.plan, data.antecFamiliares, data.antecPersonales, data.pediatra, data.fNacimiento, data.DNI, data.localidad, data.direccion, data.telefono)
                         this.seccion = 'vista'
-                        console.log("vista trae:")
-                        console.log(this.task)
                     })
             },
             /*
@@ -336,6 +335,7 @@
                             }
                         })
                         .then(res => res.json())
+                        .then(this.socket.emit('agregarPaciente', this.taskToList))
                         .then(this.taskToList = [])
                         /* .then(data => {
                             this.getTasks()
@@ -343,9 +343,6 @@
                         })*/
                 }
             }
-        },
-        sockets: {
-            
         }
     }
 

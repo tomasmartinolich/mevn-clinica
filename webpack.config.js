@@ -27,8 +27,8 @@ module.exports = {
               },
         ]
     },
-    target: 'node',
     plugins: [
         new VueLoaderPlugin()
-    ]
+    ],
+    externals: ['utf-8-validate']
 }

@@ -11,21 +11,14 @@ server.listen(3000)
 io.on('connection', function (socket) {
     // socket.emit('actualizarLista', { hello: 'world' });
     
-    socket.on('modificarSalaDeEspera', function(socket){
-     console.log("WWWWWWWWWWe")
+    socket.on('quitarPaciente', function(data){
+        io.emit('quitarDeLista', data);
     });
-    socket.emit('actualizarLista', { hello: 'world' });
+
+    socket.on('agregarPaciente', function(data){
+        io.emit('agregarALista', data);
+    });
 })
-      
-
-
-io.on('modificarSalaDeEspera', function(socket){
-    console.log("WWWWWWWWWWe")
-    socket.emit('actualizarLista', { hello: 'world' });
-})
-
-
-
 
 
 
