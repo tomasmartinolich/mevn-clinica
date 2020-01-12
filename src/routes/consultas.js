@@ -3,9 +3,10 @@ const router = express.Router();
 
 const Consulta = require('../models/Consulta'); 
 const Paciente = require('../models/Task'); 
+const checkAuth = require('../app/middleware/check-auth');
 
 //recibir datos
-router.get('/', async (req, res) => {  
+router.get('/', checkAuth, async (req, res) => {  
     const consultas = await Consulta.find();   
     res.json(consultas);   
 });

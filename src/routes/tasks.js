@@ -3,6 +3,7 @@
 //Este archivo devuelve un objeto
 const express = require('express');
 const router = express.Router();  //crea un objeto para que uno pueda definir rutas
+const checkAuth = require('../app/middleware/check-auth');
 
 const Task = require('../models/Task');     //requiere el modelo Task
 

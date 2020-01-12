@@ -12,7 +12,7 @@
                     <label for="password">Contraseña</label>
                     <input type="password" id="password" v-model="user.pass" placeholder="Ingrese su contraseña" class="form-control">
                 </div>
-                <button type="button" class="btn btn-success btn-block">Ingresar</button>
+                <button class="btn btn-success btn-block">Ingresar</button>
             </form>
             <button class="btn btn-primary btn-block" @click="formSwitch()">Registrar nuevo usuario</button>
         </div>
@@ -69,10 +69,23 @@ export default {
     },
     methods: {
         login(){
-
+            console.log("ENTRA A LOGIN!!")
+            fetch('/api/users/login', {
+                method: 'POST',
+                body: JSON.stringify(this.user),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data.message)
+                console.log(data.token)
+            })
+            .then(this.user = new User())
         },
         register(){
-            console.log("HOLA")
             fetch('/api/users/registro', {
                 method: 'POST',
                 body: JSON.stringify(this.user),
@@ -82,6 +95,9 @@ export default {
                 }
             })
             .then(res => res.json())
+            .then(data => {
+                alert(data.message)
+            })
             .then(this.user = new User())
         },
         formSwitch(){
