@@ -5,7 +5,7 @@ const Turno = new Schema({
     dia: Number,
     mes: Number,
     anio: Number,
-    hora: String,
+    hora: Number,
     descripcion: String,
     user: String
 });

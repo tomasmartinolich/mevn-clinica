@@ -58,9 +58,6 @@ export default {
         }
     },
     sockets: {
-        /*
-        connect(){
-        },*/
         actualizarLista(){
             this.getListaEspera();
         },

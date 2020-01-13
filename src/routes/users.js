@@ -74,6 +74,7 @@ users.post('/login', (req, res, next) => {
                 );
                 return res.status(200).json({
                     message: 'Autenticación exitosa.',
+                    status: 200,
                     token: token
                 })
             } else {
@@ -90,6 +91,29 @@ users.post('/login', (req, res, next) => {
         });
     })
 });
+
+users.get('/profile', (req, res, next) => {
+    let token = req.headers.token;
+    jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
+        if (err) return res.status(401).json({
+          title: 'Sin autorización'  
+        })
+        //token es válido
+        User.findOne({_id: decoded.userId}, (err, user) =>{
+            if(err) return console.log(err)
+            return res.status(200).json({
+                title: 'Usuario obtenido',
+                user: {
+                    email: user.email,
+                    nombre: user.nombre,
+                    apellido: user.apellido
+                }
+            })
+        })
+    })
+});
+
+
 
 /*
 users.get('/', async (req, res) => {

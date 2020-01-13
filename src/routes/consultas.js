@@ -6,7 +6,7 @@ const Paciente = require('../models/Task');
 const checkAuth = require('../app/middleware/check-auth');
 
 //recibir datos
-router.get('/', checkAuth, async (req, res) => {  
+router.get('/', async (req, res) => {  
     const consultas = await Consulta.find();   
     res.json(consultas);   
 });

@@ -1,9 +1,12 @@
 PRIORIDAD:
-# Hacer que el registro/login funcionen
-# Crear sección turnos, con un calendario para cada usuario que muestre los turnos programados y horarios disponibles
-# Hacer que la sala de espera se modifique en tiempo real
+# Hacer que cuando te logueas aparezca cerrar sesión y el nombre del usuario de una
+# Crear seccion perfil de usuario y permisos para crear turnos y aceptar usuarios registrados
 # F.Nac calcula EDAD, mostrar edad en tabla pacientes
 # Antecedentes va en tabla pacientes, en la consulta solo se muestra
-
-OTROS:
-Agregar filtros/paginación/búsqueda a las tablas
+# Agregar filtros/paginación/búsqueda a las tablas
+# Hacer que no aparezca el navBar cuando no estás logueado
+# Turnos: 
+    - los dias con turnos tienen que están en color. 
+    - La tabla de turnos tiene que estar ordenada por horario
+    - Que busque los turnos de acuerdo al usuario que está logueado
+    - En hora hay que agregar minutos al lado (max length 2 cada uno)

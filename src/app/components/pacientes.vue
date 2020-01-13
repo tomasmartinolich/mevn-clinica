@@ -224,6 +224,11 @@ import io from 'socket.io-client';
  //       props: ['listaEspera'],
         data() {
             return {
+                user: {
+                    "email": "",
+                    "nombre": "",
+                    "apellido": ""
+                },
                 socket : io('localhost:3000'),
                 task: new Task(),
                 tasks: [],
@@ -235,6 +240,9 @@ import io from 'socket.io-client';
             }
         },
         created() {
+            if (localStorage.getItem('token') === null) {
+                this.$router.push('/login')
+            }
             this.getTasks()
         },
         methods: {

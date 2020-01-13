@@ -1,9 +1,13 @@
 <template>
 <div>
 
+<!--
     <select id="selectPediatras" v-model="userSelect" class="form-control" @change="changeUser">
         <option v-for="user of users">{{user.nombre + " " + user.apellido}}</option>
     </select>
+-->
+
+    <h4>{{ usuario.nombre + " " + usuario.apellido}}</h4>
 
     <div>
         <datepicker 
@@ -38,7 +42,7 @@
         <form @submit.prevent="newTurno">
             <div class="form-group col-3">
                 <label for="horaTurno" class="col">Seleccionar hora</label>
-                <input type="time" v-model="turno.hora" id="horaTurno" class="col form-control">
+                <input type="number" v-model="turno.hora" id="horaTurno" class="col form-control">
             </div>
             <div class="form-group col-3">
                 <label for="descTurno" class="col">Descripción</label>
@@ -87,13 +91,42 @@ export default {
             seccion: 'tabla',
             turno: new Turno(),
             turnos: [],
-            formato: "dd/MM/yyyy"
+            formato: "dd/MM/yyyy",
+            usuario: {
+                "email": '',
+                "nombre": '',
+                "apellido": ''
+            }
         }
     },
     created(){
-        this.getUsers()
+        if (localStorage.getItem('token') === null) {
+            this.$router.push('/login')
+        }
+        //this.getUsers()
+    },
+    mounted(){
+      this.getUser()  
     },
     methods: {
+        getUser(){
+            fetch('/api/users/profile', {
+                method: 'GET',
+                //body: JSON.stringify(this.task),
+                headers: {
+                    'Accept': 'application/json',
+                    'token': localStorage.getItem('token'),
+                    'Content-type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    this.usuario.email = data.user.email
+                    this.usuario.nombre = data.user.nombre
+                    this.usuario.apellido = data.user.apellido
+                })
+        },
+        /*
         getUsers() {
             fetch('/api/users')
                 .then(res => res.json())
@@ -102,19 +135,18 @@ export default {
                     console.log(data)
                     this.users = data
                 })
-        },
-        changeUser(){
-            alert(this.userSelect)
-        },
+        },*/
         getTurnos(){ 
-            fetch('/api/turnos/' + this.userSelect + '/' + this.fechaDia + '/' + this.fechaMes + '/' + this.fechaAnio)
+            fetch('/api/turnos/' + this.usuario.nombre + " " + this.usuario.apellido + '/' + this.fechaDia + '/' + this.fechaMes + '/' + this.fechaAnio)
             .then(res => res.json())
             .then(data => {
                 this.turnos = data
+                console.log(this.turnos)
             })
         },
         newTurno(){
-            this.turno.user = this.userSelect
+            console.log("hora: " + this.turno.hora)
+            this.turno.user = this.usuario.nombre + " " + this.usuario.apellido
             this.turno.dia = this.fechaDia
             this.turno.mes = this.fechaMes
             this.turno.anio = this.fechaAnio

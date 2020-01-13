@@ -64,12 +64,12 @@ export default {
     data(){
         return{
             user: new User(),
-            loginForm: true
+            loginForm: true,
+            ok: false
         }
     },
     methods: {
         login(){
-            console.log("ENTRA A LOGIN!!")
             fetch('/api/users/login', {
                 method: 'POST',
                 body: JSON.stringify(this.user),
@@ -77,13 +77,23 @@ export default {
                     'Accept': 'application/json',
                     'Content-type': 'application/json'
                 }
-            })
+            })   
+            /*     
+            .then(res => {
+                if (res.status === 200) {
+                    console.log("res status 200")
+                    this.ok = true
+                }
+            })*/
             .then(res => res.json())
             .then(data => {
-                console.log(data.message)
-                console.log(data.token)
+                if (data.status === 200) {
+                    localStorage.setItem('token', data.token);
+                    this.user = new User()
+                    this.$router.push('/'); 
+                    
+                }               
             })
-            .then(this.user = new User())
         },
         register(){
             fetch('/api/users/registro', {
