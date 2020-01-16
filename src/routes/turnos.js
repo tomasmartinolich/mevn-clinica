@@ -11,6 +11,11 @@ turnos.get('/:user/:dia/:mes/:anio', async (req, res) => {
     res.json(turno);
 });
 
+turnos.get('/:user', async (req, res) => {
+    const turno = await Turno.find({'user': req.params.user});
+    res.json(turno);
+});
+
 turnos.post('/', async (req, res) => {
     let turno = new Turno(req.body);
     await turno.save();

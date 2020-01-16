@@ -92,7 +92,7 @@
                             <th>Paciente</th>
                             <th>DNI</th>
                             <th>Pediatra</th>
-                            <th>Dirección</th>
+                            <th>Localidad</th>
                             <th>Teléfono</th>
                             <th>Opciones</th>
                         </tr>
@@ -102,7 +102,7 @@
                             <td>{{task.apellido + " " + task.nombre}}</td>
                             <td>{{task.DNI}}</td>
                             <td>{{task.pediatra}}</td>
-                            <td>{{task.direccion}}</td>
+                            <td>{{task.localidad}}</td>
                             <td>{{task.telefono}}</td>
                             <td>
                                 <button @click="verPaciente(task._id)" class="btn btn-secondary">
@@ -133,54 +133,36 @@
         <div class="container" v-if="seccion === 'vista'">
             <button type="button" class="btn btn-dark" @click="seccion = 'tabla'">Volver</button>
             <div class="row">
-                <div class="form-group col-3">
-                    <b>Nombre</b>
-                    <input readonly type="text" v-model="task.nombre" class="form-control-plaintext">
-                </div>
-                <div class="form-group col-3">
-                    <b>Apellido</b>
-                    <input readonly type="text" v-model="task.apellido" class="form-control-plaintext">
-                </div>
-                <div class="form-group col-3">
-                    <b>DNI</b>
-                    <input readonly type="DNI" v-model="task.DNI" class="form-control-plaintext">
-                </div>
-                <div class="form-group col-3">
-                    <b>Fecha de Nacimiento</b>
-                    <input readonly type="date" v-model="task.fNacimiento" class="col form-control-plaintext">
+                <div class="form-group col-4">
+                    <b>Paciente:</b>
+                    <span>{{task.apellido + " " + task.nombre}}</span><br>
+                    <b>Edad:</b>
+                    <span>{{task.fNacimiento}}</span><br>
+                    <b>DNI:</b>
+                    <span>{{task.DNI}}</span><br>
                 </div>
             </div>
             
             <div class="row">
                 <div class="form-group col-3">
-                    <b>Localidad</b>
-                    <input readonly type="text" v-model="task.localidad" class="form-control-plaintext">
-                </div>
-                <div class="form-group col-3">
-                    <b>Dirección</b>
-                    <input readonly type="text" v-model="task.direccion" class="form-control-plaintext">
-                </div>
-                <div class="form-group col-3">
-                    <b>Teléfono</b>
-                    <input readonly type="number" v-model="task.telefono" class="form-control-plaintext">
-                </div>
-                <div class="form-group col-3">
-                    <b>Cobertura</b>
-                    <input readonly type="text" v-model="task.cobertura" class="form-control col-plaintext">
-                </div>
-                <div class="form-group col-3">
-                    <b>N° Afiliado</b>
-                    <input readonly type="text" v-model="task.nAfiliado" class="form-control col-plaintext">
-                </div>
-                <div class="form-group col-3">
-                    <b>Plan</b>
-                    <input readonly type="text" v-model="task.plan" class="form-control col-plaintext">
+                    <b>Localidad:</b>
+                    <span>{{task.localidad}}</span><br>   
+                    <b>Dirección:</b>
+                    <span>{{task.direccion}}</span><br>
+                    <b>Teléfono:</b>
+                    <span>{{task.telefono}}</span><br>
+                    <b>Cobertura:</b>
+                    <span>{{task.cobertura}}</span><br>
+                    <b>N° Afiliado:</b>
+                    <span>{{task.nAfiliado}}</span><br>
+                    <b>Plan:</b>
+                    <span>{{task.plan}}</span><br>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-3">
                     <b>Pediatra</b>
-                    <input readonly type="text" v-model="task.pediatra" class="form-control-plaintext">
+                    <span>{{task.pediatra}}</span><br>
                 </div>
             </div>
             <div class="row">
@@ -199,6 +181,7 @@
 </template>
 
 <script>
+var moment = require('moment');
 import io from 'socket.io-client';
     class Task {
         constructor(nombre, apellido, cobertura, nAfiliado, plan, antecFamiliares, antecPersonales, pediatra, fNacimiento, DNI, localidad, direccion, telefono) {
@@ -210,7 +193,7 @@ import io from 'socket.io-client';
             this.antecFamiliares = antecFamiliares
             this.antecPersonales = antecPersonales
             this.pediatra = pediatra
-            this.fNacimiento = fNacimiento
+            this.fNacimiento = new Date(fNacimiento)
             this.DNI = DNI
             this.localidad = localidad
             this.direccion = direccion
@@ -246,6 +229,26 @@ import io from 'socket.io-client';
             this.getTasks()
         },
         methods: {
+            getEdad(FNAC){
+                var today = new Date();
+                var birthDate = new Date(FNAC);
+                var age = today.getFullYear() - birthDate.getFullYear();
+                var m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age = age - 1;
+                }
+                return age;
+                //alert(getEdad("12/21/1993"));
+            },
+            getfNacimiento(){
+               // this.task.fNacimiento = moment().format(moment.HTML5_FMT.DATE)
+                let fNac = this.task.fNacimiento
+                let fNacDia = fNac.getDate() +1
+                let fNacMes = (fNac.getMonth() + 1)
+                let fNacAnio = fNac.getFullYear()
+                let fNac2 = fNacMes.toString() + "/" + fNacDia.toString() + "/" + fNacAnio.toString()
+                this.task.fNacimiento = this.getEdad(fNac2) + " (" + fNacDia + "/" + fNacMes + "/" + fNacAnio + ")"
+            },
             showFormPacientes(){
                 this.edit = false
                 this.task = new Task()
@@ -304,6 +307,7 @@ import io from 'socket.io-client';
                     .then(data => {
                         this.task = new Task(data.nombre, data.apellido, data.cobertura, data.nAfiliado, data.plan, data.antecFamiliares, data.antecPersonales, data.pediatra, data.fNacimiento, data.DNI, data.localidad, data.direccion, data.telefono)
                         this.seccion = 'vista'
+                        this.getfNacimiento()
                     })
             },
             /*

@@ -6,7 +6,10 @@ PRIORIDAD:
 # Agregar filtros/paginación/búsqueda a las tablas
 # Hacer que no aparezca el navBar cuando no estás logueado
 # Turnos: 
-    - los dias con turnos tienen que están en color. 
     - La tabla de turnos tiene que estar ordenada por horario
-    - Que busque los turnos de acuerdo al usuario que está logueado
     - En hora hay que agregar minutos al lado (max length 2 cada uno)
+    - Que muestre turnos del usuario que está logueado, o que te deje elegir si es un usuario con permiso de turnos
+
+
+ARREGLAR:
+- Después de un rato no anda lo del token del usuario, creo que expira

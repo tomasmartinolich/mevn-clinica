@@ -16,6 +16,7 @@
             v-model="fecha"
             :language="es"
             :format="formato"
+            :highlighted="state.highlighted"
         >
         </datepicker> 
     </div>
@@ -30,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="turno of turnos">
+                <tr v-for="turno of turnosDia">
                     <td>{{turno.hora}}</td>
                     <td>{{turno.descripcion}}</td>
                 </tr>
@@ -65,15 +66,15 @@ import css from './turnos.css';
 //var MicroModal = require('micromodal');
 
 class Turno {
-        constructor(dia, mes, anio, hora, descripcion, user) {
-            this.dia = dia
-            this.mes = mes
-            this.anio = anio
-            this.hora = hora
-            this.descripcion = descripcion
-            this.user = user
-        }
+    constructor(dia, mes, anio, hora, descripcion, user) {
+        this.dia = dia
+        this.mes = mes
+        this.anio = anio
+        this.hora = hora
+        this.descripcion = descripcion
+        this.user = user
     }
+}
 
 export default {
     components: {
@@ -81,6 +82,11 @@ export default {
     },
     data(){
         return{
+            state: {
+                highlighted: {
+                    dates: []
+                }
+            },
             es: es,
             fecha: null,
             fechaDia: null,
@@ -91,6 +97,7 @@ export default {
             seccion: 'tabla',
             turno: new Turno(),
             turnos: [],
+            turnosDia: [],
             formato: "dd/MM/yyyy",
             usuario: {
                 "email": '',
@@ -119,29 +126,27 @@ export default {
                     'Content-type': 'application/json'
                 }
             })
-                .then(res => res.json())
-                .then(data => {
-                    this.usuario.email = data.user.email
-                    this.usuario.nombre = data.user.nombre
-                    this.usuario.apellido = data.user.apellido
-                })
+            .then(res => res.json())
+            .then(data => {
+                this.usuario.email = data.user.email
+                this.usuario.nombre = data.user.nombre
+                this.usuario.apellido = data.user.apellido
+                this.getTurnos()
+            })
         },
-        /*
-        getUsers() {
-            fetch('/api/users')
-                .then(res => res.json())
-                .then(data => {
-                    console.log("users:")
-                    console.log(data)
-                    this.users = data
-                })
-        },*/
         getTurnos(){ 
-            fetch('/api/turnos/' + this.usuario.nombre + " " + this.usuario.apellido + '/' + this.fechaDia + '/' + this.fechaMes + '/' + this.fechaAnio)
+            fetch('/api/turnos/' + this.usuario.nombre + " " + this.usuario.apellido)
             .then(res => res.json())
             .then(data => {
                 this.turnos = data
-                console.log(this.turnos)
+                this.resaltarFechas()
+            })
+        },
+        getTurnosDia(){ 
+            fetch('/api/turnos/' + this.usuario.nombre + " " + this.usuario.apellido + '/' + this.fechaDia + '/' + this.fechaMes + '/' + this.fechaAnio)
+            .then(res => res.json())
+            .then(data => {
+                this.turnosDia = data
             })
         },
         newTurno(){
@@ -164,8 +169,17 @@ export default {
                     this.turno = new Turno()
                     this.seccion = 'tabla'
                     this.getTurnos()
+                    this.getTurnosDia()
                 })
             
+        },
+        resaltarFechas(){
+            this.state.highlighted.dates = []
+            this.turnos.forEach(this.resaltar)
+        },
+        resaltar(turno,index){
+            console.log(index + ":" + turno.dia + "/" + turno.mes + "/" + turno.anio)
+            this.state.highlighted.dates.push(new Date(turno.anio, turno.mes -1, turno.dia))
         }
     },
     watch: {
@@ -173,7 +187,10 @@ export default {
             this.fechaDia = this.fecha.getDate()
             this.fechaMes = (this.fecha.getMonth() + 1)
             this.fechaAnio = this.fecha.getFullYear()
-            this.getTurnos()
+            this.getTurnosDia()
+        },
+        turnos: function(){
+            
         }
     }
 }
