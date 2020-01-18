@@ -16,6 +16,11 @@ turnos.get('/:user', async (req, res) => {
     res.json(turno);
 });
 
+turnos.get('/turno/:id', async (req, res) => {
+    const turno = await Turno.findById(req.params.id);
+    res.json(turno);
+});
+
 turnos.post('/', async (req, res) => {
     let turno = new Turno(req.body);
     await turno.save();
@@ -23,6 +28,20 @@ turnos.post('/', async (req, res) => {
         status: 'Turno guardado'
     });
 });    
+
+turnos.put('/:turno', async (req, res) => {
+    await Turno.findByIdAndUpdate(req.params.turno, req.body);
+    res.json({
+        status: 'Turno actualizado'
+    });
+});
+
+turnos.delete('/:turno', async (req, res) => {
+    await Turno.findByIdAndRemove(req.params.turno);
+    res.json({
+        status: 'Turno eliminado'
+    });
+});
 
 
 module.exports = turnos; 
