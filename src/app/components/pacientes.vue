@@ -25,10 +25,7 @@
                     <div class="row">
                         <div class="form-group col-3">
                             <label for="selectPediatras">Pediatra</label>
-                            <select id="selectPediatras" v-model="task.pediatra" class="form-control">
-                                <option>Juan</option>
-                                <option>Carlos</option>
-                            </select>
+                            <input type="text" id="selectPediatras" v-model="task.pediatra" class="form-control">
                         </div>
                     </div>              
                     <div class="row">
@@ -90,7 +87,7 @@
                     <thead class="thead-dark">
                         <tr class="text-center">
                             <th>Paciente</th>
-                            <th>DNI</th>
+                            <th>Edad</th>
                             <th>Pediatra</th>
                             <th>Localidad</th>
                             <th>Teléfono</th>
@@ -100,7 +97,7 @@
                     <tbody>
                         <tr v-for="task of tasks">
                             <td>{{task.apellido + " " + task.nombre}}</td>
-                            <td>{{task.DNI}}</td>
+                            <td>{{task.fNacimiento}}</td>
                             <td>{{task.pediatra}}</td>
                             <td>{{task.localidad}}</td>
                             <td>{{task.telefono}}</td>
@@ -242,7 +239,7 @@ import io from 'socket.io-client';
             },
             getfNacimiento(){
                // this.task.fNacimiento = moment().format(moment.HTML5_FMT.DATE)
-                let fNac = this.task.fNacimiento
+                let fNac = new Date(this.task.fNacimiento)
                 let fNacDia = fNac.getDate() +1
                 let fNacMes = (fNac.getMonth() + 1)
                 let fNacAnio = fNac.getFullYear()
@@ -292,7 +289,14 @@ import io from 'socket.io-client';
                     .then(res => res.json())
                     .then(data => {
                         this.tasks = data
+                        this.tasks.forEach(this.nacimientos)
+                        
                     })
+            },
+            nacimientos(task,index){
+                this.task = this.tasks[index]
+                this.getfNacimiento()
+                this.task.fNacimiento.slice(0,3)
             },
             getSpecificTask(id) {
                 fetch('/api/tasks/'+id)

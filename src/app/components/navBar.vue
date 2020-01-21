@@ -12,7 +12,7 @@
                 <router-link to="/turnos">
                     <button type="button" class="btn btn-dark">Turnos</button>
                 </router-link>
-                <button type="button" class="btn btn-dark">Cerrar sesión</button>
+                <button type="button" class="btn btn-dark" @click="cerrarSesion">Cerrar sesión</button>
                 <button class="btn btn-dark">{{user.nombre + " " + user.apellido}}</button>
             </ul>   
         </nav>
@@ -21,6 +21,9 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import EventBus from './event-bus.js';
+
 export default {
     data(){
         return{
@@ -38,9 +41,9 @@ export default {
     methods: {
         cerrarSesion(){
             localStorage.clear()
-            this.user.email = ""
-            this.user.nombre = ""
-            this.user.apellido = ""
+            console.log("entra a cerrar sesion")
+            this.user=""
+            EventBus.$emit('logout');
             this.$router.push('/login')
         },
         getUser(){

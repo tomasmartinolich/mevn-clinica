@@ -1,22 +1,26 @@
 <template>
     <div id="app">   
-        <navBar/> 
-       <!--     <button @click="agregaUno">Prueba lista</button> -->
+        <navBar v-if="token"/> 
         <div class="container-fluid row">
             <div class="col-10"><router-view/></div>       
-            <div class="col-2 py-md-5"><salaEspera/></div>  
+            <div class="col-2 py-md-5"><salaEspera v-if="token"/></div>  
         </div>
     </div>
 </template>
 
 
 <script>
+import Vue from 'vue';
+import EventBus from './components/event-bus.js';
+
 import navBar from './components/navBar.vue';
 import pacientes from './components/pacientes.vue';
 import consultas from './components/consultas.vue';
 import salaEspera from './components/salaEspera.vue';
 import login from './components/login.vue';
 import turnos from './components/turnos.vue';
+
+
 
 export default {
     name: 'App',
@@ -28,18 +32,34 @@ export default {
         turnos,
         salaEspera
     },
+    created(){
+        if (localStorage.getItem('token') !== null) {
+            this.token = true
+        }
+    },
+    mounted(){
+        EventBus.$on('logueado', coso => {
+            alert("llega")
+            this.token = true
+        });
+
+        EventBus.$on('logout', coso => {
+            this.token = false
+        });
+    },
     data() {
         return {
-        //    listaEspera: ['Paciente 1'],
-            seccion: 'pacientes'
+            seccion: 'pacientes',
+            token: false,
         }  
     },
     methods: {
-        agregaUno() {
-            this.listaEspera.push("Probanding");
-        }
+
     }
 }
+
+
+
 </script>
 
 

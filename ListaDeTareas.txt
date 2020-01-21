@@ -1,14 +1,7 @@
 PRIORIDAD:
-!# Hacer que cuando te logueas aparezca el navBar de una
 !# Crear seccion perfil de usuario y permisos para crear turnos y aceptar usuarios registrados
-# F.Nac calcula EDAD, mostrar edad en tabla pacientes
 # Antecedentes va en tabla pacientes, en la consulta solo se muestra
 # Agregar filtros/paginación/búsqueda a las tablas
 # Turnos: 
     - La tabla de turnos tiene que estar ordenada por horario
     - Que muestre turnos del usuario que está logueado, o que te deje elegir en caso de ser un usuario con permiso de turnos
-
-
-ARREGLAR:
-!- Después de un rato no anda lo del token del usuario, creo que expira
-!- En tabla consultas, la fecha se ve mal

@@ -2,7 +2,7 @@
     <div>
         <div class="container">
             <div class="row-2 text-center">
-                <h1>Historia clínica de {{ paciente.apellido + " " + paciente.nombre }}</h1>
+                <h1 v-if="seccion === 'form' || seccion === 'tabla'">Historia clínica de {{ paciente.apellido + " " + paciente.nombre }}</h1>
             </div>
             
                             <!-- FORMULARIO DE CONSULTA -->
@@ -98,17 +98,13 @@
             <div class="container col-8 overflow-auto text-center" v-if="seccion === 'vista'">
                 <div class="btn btn-secondary" @click="seccion = 'tabla'">Volver</div>
                 <div class="row py-md-3">
-                    <div class="col">
+                    <div class="col-6">
                         <b>Fecha de la consulta</b>
-                        <input readonly type="date" v-model="consulta.fConsulta" class="col form-control-plaintext text-center">
-                    </div>
-                    <div class="col">
+                        <span>{{consulta.fConsulta}}</span><br>
                         <b>Motivo de la consulta</b>
-                    <input readonly type="text" v-model="consulta.motivo" class="form-control-plaintext text-center">
-                    </div>
-                    <div class="col">
-                    <b>Enfermedad actual</b>
-                    <input readonly type="text" v-model="consulta.enfermedadActual" class="form-control-plaintext text-center">
+                        <span>{{consulta.motivo}}</span><br>
+                        <b>Enfermedad actual</b>
+                        <span>{{consulta.enfermedadActual}}</span><br>
                     </div>
                 </div>
                 <div class="row py-md-3">
@@ -248,7 +244,12 @@
                 fetch('/api/consultas/' + this.pacienteDNI)
                     .then(res => res.json())
                     .then(data => {
+                        data[0].fConsulta = new Date(data[0].fConsulta)
+                        console.log(data[0].fConsulta)
+                        console.log(typeof data[0].fConsulta)
+                        data[0].fConsulta = (data[0].fConsulta.getDate() + 1) + "/" + (data[0].fConsulta.getMonth() + 1) + "/" + data[0].fConsulta.getFullYear()
                         this.consultas = data
+
                     })
             },
             verConsulta(id){
@@ -256,6 +257,7 @@
                 .then(res => res.json())
                 .then(data => {
                     this.consulta = new Consulta(data.paciente, data.fConsulta, data.motivo, data.enfermedadActual, data.examenFisico, data.conducta, data.observaciones)
+                    this.getfConsulta()
                 })  
                 this.seccion = 'vista'
             },
@@ -281,7 +283,16 @@
                         this.consultaToEdit = data._id
                         this.edit = true
                     })
-            }
+            },
+            getfConsulta(){
+                let fCon = new Date(this.consulta.fConsulta)
+                let fConDia = fCon.getDate() +1
+                let fConMes = fCon.getMonth() + 1
+                let fConAnio = fCon.getFullYear()
+                fCon = fConDia.toString() + "/" + fConMes.toString() + "/" + fConAnio.toString()
+                this.consulta.fConsulta = fCon
+                console.log("fConsulta: " + this.consulta.fConsulta)
+            },
         }
     }
 

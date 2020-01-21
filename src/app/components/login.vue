@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import EventBus from './event-bus.js';
 
 class User {
     constructor(nombre,apellido,email,pass) {
@@ -89,7 +91,8 @@ export default {
             .then(data => {
                 if (data.status === 200) {
                     localStorage.setItem('token', data.token);
-                    this.user = new User()
+                    this.user = localStorage.getItem('token')
+                    EventBus.$emit('logueado', this.user);
                     this.$router.push('/'); 
                     
                 }               
