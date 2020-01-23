@@ -19,6 +19,7 @@ import consultas from './components/consultas.vue';
 import salaEspera from './components/salaEspera.vue';
 import login from './components/login.vue';
 import turnos from './components/turnos.vue';
+import permisos from './components/permisos.vue';
 
 
 
@@ -30,7 +31,8 @@ export default {
         pacientes,
         consultas,
         turnos,
-        salaEspera
+        salaEspera,
+        permisos
     },
     created(){
         if (localStorage.getItem('token') !== null) {
@@ -39,7 +41,6 @@ export default {
     },
     mounted(){
         EventBus.$on('logueado', coso => {
-            alert("llega")
             this.token = true
         });
 

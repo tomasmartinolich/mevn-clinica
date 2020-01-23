@@ -80,13 +80,6 @@ export default {
                     'Content-type': 'application/json'
                 }
             })   
-            /*     
-            .then(res => {
-                if (res.status === 200) {
-                    console.log("res status 200")
-                    this.ok = true
-                }
-            })*/
             .then(res => res.json())
             .then(data => {
                 if (data.status === 200) {
@@ -94,7 +87,6 @@ export default {
                     this.user = localStorage.getItem('token')
                     EventBus.$emit('logueado', this.user);
                     this.$router.push('/'); 
-                    
                 }               
             })
         },

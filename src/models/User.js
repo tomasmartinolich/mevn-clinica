@@ -18,7 +18,9 @@ const User = new Schema({
     pass: {
         type: String,
         required: true
-    }
+    },
+    admin: Boolean,
+    turnos: Boolean
 });
 
 module.exports = mongoose.model('User', User);

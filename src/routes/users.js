@@ -25,7 +25,9 @@ users.post('/registro', async (req, res, next) => {
                         nombre: req.body.nombre,
                         apellido: req.body.apellido,
                         email: req.body.email,
-                        pass: hash
+                        pass: hash,
+                        admin: false,
+                        turnos: false
                     });
                     user.save().then(result => {
                         console.log(result)
@@ -65,7 +67,9 @@ users.post('/login', (req, res, next) => {
                     nombre: user.nombre,
                     apellido: user.apellido,
                     email: user.email,
-                    userId: user._id
+                    userId: user._id,
+                    admin: user.admin,
+                    turnos: user.turnos
                 }, 
                     process.env.JWT_KEY,
                     {
@@ -106,14 +110,46 @@ users.get('/profile', (req, res, next) => {
                 user: {
                     email: user.email,
                     nombre: user.nombre,
-                    apellido: user.apellido
+                    apellido: user.apellido,
+                    admin: user.admin,
+                    turnos: user.turnos
                 }
             })
         })
     })
 });
 
+//Get all users
+users.get('/', async (req, res) => {       
+    const users = await User.find({}).select('nombre apellido admin turnos');   
+    res.json(users);   
+});
 
+//cambiar permisos
+users.put('/:admin', async (req, res) => {
+    let bool = req.params.admin
+    let permiso = req.headers.permiso
+    switch (bool) {
+        case 'true':
+            bool = true
+        break;
+        case 'false':
+            bool = false
+        break;
+    }
+
+    switch (permiso) {
+        case 'admin':
+            await User.findByIdAndUpdate(req.headers.user, {'admin': bool});  
+        break;
+        case 'turnos':
+            await User.findByIdAndUpdate(req.headers.user, {'turnos': bool});
+        break;
+    }
+    res.json({
+        status: 'Permiso modificado'
+    }); 
+});
 
 /*
 users.get('/', async (req, res) => {

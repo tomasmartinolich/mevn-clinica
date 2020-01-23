@@ -12,6 +12,9 @@
                 <router-link to="/turnos">
                     <button type="button" class="btn btn-dark">Turnos</button>
                 </router-link>
+                <router-link to="/permisos">
+                    <button type="button" class="btn btn-dark">Permisos</button>
+                </router-link>
                 <button type="button" class="btn btn-dark" @click="cerrarSesion">Cerrar sesión</button>
                 <button class="btn btn-dark">{{user.nombre + " " + user.apellido}}</button>
             </ul>   
@@ -41,7 +44,6 @@ export default {
     methods: {
         cerrarSesion(){
             localStorage.clear()
-            console.log("entra a cerrar sesion")
             this.user=""
             EventBus.$emit('logout');
             this.$router.push('/login')
