@@ -27,12 +27,13 @@ users.post('/registro', async (req, res, next) => {
                         email: req.body.email,
                         pass: hash,
                         admin: false,
-                        turnos: false
+                        turnos: false,
+                        pending: true
                     });
                     user.save().then(result => {
                         console.log(result)
                         res.status(201).json({
-                            message: 'Usuario creado.'
+                            message: 'Usuario creado. En espera de aprobación'
                         })
                     }).catch(err => {
                         console.log(err);
@@ -56,6 +57,12 @@ users.post('/login', (req, res, next) => {
                 message: 'Autenticación fallida'
             });
         }
+        if (user.pending) {
+            return res.status(403).json({
+                status: 403,
+                message: 'El usuario aún no ha sido aprobado'
+            });
+        }
         bcrypt.compare(req.body.pass, user.pass, (err, result) => {
             if(err){
                 return res.status(401).json({
@@ -69,7 +76,8 @@ users.post('/login', (req, res, next) => {
                     email: user.email,
                     userId: user._id,
                     admin: user.admin,
-                    turnos: user.turnos
+                    turnos: user.turnos,
+                    pending: user.pending
                 }, 
                     process.env.JWT_KEY,
                     {
@@ -112,16 +120,23 @@ users.get('/profile', (req, res, next) => {
                     nombre: user.nombre,
                     apellido: user.apellido,
                     admin: user.admin,
-                    turnos: user.turnos
+                    turnos: user.turnos,
+                    pending: user.pending
                 }
             })
         })
     })
 });
 
-//Get all users
+//Get users aprobados
 users.get('/', async (req, res) => {       
-    const users = await User.find({}).select('nombre apellido admin turnos');   
+    const users = await User.find({'pending': false}).select('nombre apellido admin turnos pending');   
+    res.json(users);   
+});
+
+//Get pending users
+users.get('/pending', async (req, res) => {       
+    const users = await User.find({'pending': true}).select('nombre apellido admin turnos pending');   
     res.json(users);   
 });
 
@@ -144,6 +159,9 @@ users.put('/:admin', async (req, res) => {
         break;
         case 'turnos':
             await User.findByIdAndUpdate(req.headers.user, {'turnos': bool});
+        break;
+        case 'pending':
+            await User.findByIdAndUpdate(req.headers.user, {'pending': bool});
         break;
     }
     res.json({

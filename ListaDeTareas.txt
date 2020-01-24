@@ -5,3 +5,8 @@ PRIORIDAD:
 # Turnos: 
     - La tabla de turnos tiene que estar ordenada por horario
     - Que muestre turnos del usuario que está logueado, o que te deje elegir en caso de ser un usuario con permiso de turnos
+
+
+¿El usuario solo ve las consultas que hizo?
+¿Qué onda la firma?
+¿Antecedentes qué onda?

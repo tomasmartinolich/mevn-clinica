@@ -1,13 +1,15 @@
 <template>
 <div>
+    <div v-if="usuario.turnos">
+        <h2 v-if="userSelect === null">Seleccionar usuario</h2>
+        <h2 v-else>Turnos de {{userSelect}}</h2>
+        <select v-model="userSelect" class="form-control" @change="selectUser">
+            <option v-for="user of users">{{user.nombre + " " + user.apellido}}</option>
+        </select>
+    </div>
 
-<!--
-    <select id="selectPediatras" v-model="userSelect" class="form-control" @change="changeUser">
-        <option v-for="user of users">{{user.nombre + " " + user.apellido}}</option>
-    </select>
--->
 
-    <h4>{{ usuario.nombre + " " + usuario.apellido}}</h4>
+    <h4 v-if="userSelect === null">{{ usuario.nombre + " " + usuario.apellido}}</h4>
 
     <div>
         <datepicker 
@@ -47,10 +49,13 @@
 
     <div v-if="seccion === 'form'">
         <form @submit.prevent="newTurno">
-            <div class="form-group col-3">
+            <div class="form-group">
                 <label for="horaTurno" class="col">Seleccionar hora</label>
-                <input type="number" v-model="turno.hora" id="horaTurno" class="form-control" maxlength="2" size="2">
-                <input type="number" v-model="turno.min" class="form-control" maxlength="2" size="2">
+                <div class="row">
+                    <input type="number" v-model="turno.hora" id="horaTurno" class="form-control col-1" maxlength="2" size="2" placeholder="hs">
+                    <input type="number" v-model="turno.min" class="form-control col-1" maxlength="2" size="2" placeholder="min">
+                </div>
+
             </div>
             <div class="form-group col-3">
                 <label for="descTurno" class="col">Descripción</label>
@@ -100,6 +105,10 @@ export default {
             fechaAnio: null,
             users: [],
             userSelect: null,
+            usr_selected: {
+                "nombre": '',
+                "apellido": ''
+            },
             seccion: 'tabla',
             turno: new Turno(),
             turnos: [],
@@ -108,7 +117,8 @@ export default {
             usuario: {
                 "email": '',
                 "nombre": '',
-                "apellido": ''
+                "apellido": '',
+                "turnos": false
             },
             edit: false,
             turnoToEdit: ''
@@ -143,26 +153,59 @@ export default {
                 this.usuario.email = data.user.email
                 this.usuario.nombre = data.user.nombre
                 this.usuario.apellido = data.user.apellido
-                this.getTurnos()
+                this.usuario.turnos = data.user.turnos
+                if (this.usuario.turnos) {
+                    this.getUserList()
+                }else{
+                    this.getTurnos(this.usuario)
+                }
+                
             })
         },
-        getTurnos(){ 
-            fetch('/api/turnos/' + this.usuario.nombre + " " + this.usuario.apellido)
+        getUserList(){
+            fetch('/api/users')
+            .then(res => res.json())
+            .then(data => {
+                this.users = data    
+            })
+            .then(this.getTurnos(this.usuario))
+        },
+        checkUsr(){
+            this.usr_selected.nombre = this.userSelect.split(" ")[0]
+            this.usr_selected.apellido = this.userSelect.split(" ")[1]
+            if (this.usr_selected.nombre !== this.usuario.nombre && this.usr_selected.apellido !== this.usuario.apellido) {
+                console.log("usr_selected: " + this.usr_selected)
+                return this.usr_selected    
+            } else{
+                return this.usuario
+            }
+        },
+        selectUser(){
+            this.turnos = []
+            this.getTurnos(this.checkUsr())
+        },
+        getTurnos(usuario){ 
+            console.log("getTurnos usuario:")
+            console.log(usuario.nombre + " " + usuario.apellido)
+            fetch('/api/turnos/' + usuario.nombre + " " + usuario.apellido)
             .then(res => res.json())
             .then(data => {
                 this.turnos = data
-                this.resaltarFechas()
             })
         },
-        getTurnosDia(){ 
-            fetch('/api/turnos/' + this.usuario.nombre + " " + this.usuario.apellido + '/' + this.fechaDia + '/' + this.fechaMes + '/' + this.fechaAnio)
+        resaltar(turno,index){
+            this.state.highlighted.dates.push(new Date(turno.anio, turno.mes -1, turno.dia))
+        },
+        getTurnosDia(usuario){ 
+            fetch('/api/turnos/' + usuario.nombre + " " + usuario.apellido + '/' + this.fechaDia + '/' + this.fechaMes + '/' + this.fechaAnio)
             .then(res => res.json())
             .then(data => {
                 this.turnosDia = data
             })
         },
         newTurno(){
-            this.turno.user = this.usuario.nombre + " " + this.usuario.apellido
+            this.turno.user = this.checkUsr()
+            this.turno.user = this.turno.user.nombre + " " + this.turno.user.apellido
             this.turno.dia = this.fechaDia
             this.turno.mes = this.fechaMes
             this.turno.anio = this.fechaAnio
@@ -191,8 +234,8 @@ export default {
             this.turno = new Turno()
             this.seccion = 'tabla'
             this.edit = false
-            this.getTurnos()
-            this.getTurnosDia()
+            this.getTurnos(this.checkUsr())
+            this.getTurnosDia(this.checkUsr())
         },
         editON(turno){
             this.seccion = "form"
@@ -215,23 +258,21 @@ export default {
             })
             .then(res => res.json())
             .then(data => {
-                this.getTurnosDia()
+                this.getTurnosDia(this.checkUsr())
             })
-        },
-        resaltarFechas(){
-            this.state.highlighted.dates = []
-            this.turnos.forEach(this.resaltar)
-        },
-        resaltar(turno,index){
-            this.state.highlighted.dates.push(new Date(turno.anio, turno.mes -1, turno.dia))
         }
     },
     watch: {
         fecha: function(){
-            this.fechaDia = this.fecha.getDate()
-            this.fechaMes = (this.fecha.getMonth() + 1)
-            this.fechaAnio = this.fecha.getFullYear()
-            this.getTurnosDia()
+                this.fechaDia = this.fecha.getDate()
+                this.fechaMes = (this.fecha.getMonth() + 1)
+                this.fechaAnio = this.fecha.getFullYear()
+                this.getTurnosDia(this.checkUsr())  
+            
+        },
+        turnos: function(){
+            this.state.highlighted.dates = []
+            this.turnos.forEach(this.resaltar)
         }
     },
     computed: {

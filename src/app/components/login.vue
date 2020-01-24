@@ -87,7 +87,10 @@ export default {
                     this.user = localStorage.getItem('token')
                     EventBus.$emit('logueado', this.user);
                     this.$router.push('/'); 
-                }               
+                }   
+                if (data.status === 403) {
+                    alert(data.message)
+                }            
             })
         },
         register(){

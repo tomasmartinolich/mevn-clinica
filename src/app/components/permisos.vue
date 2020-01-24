@@ -38,14 +38,15 @@
             <thead class="thead-dark">
                 <tr class="text-center">
                     <th>Usuario</th>
-                    <th>Opción</th>
+                    <th>Acceso</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Usuario Prueba</td>
+                <tr v-for="user of pendingUsers">
+                    <td>{{user.nombre + " " + user.apellido}}</td>
                     <td>
-                        <button class="btn btn-success">Aprobar</button>
+                        <button v-if="user.pending" @click="permisoAdmin(user._id, 'pending', false)" class="btn btn-success">Permitir</button>  
+                        <button v-else @click="permisoAdmin(user._id, 'pending', true)" class="btn btn-danger">Prohibir</button>
                     </td>
                 </tr>
             </tbody>
@@ -60,7 +61,8 @@
 export default {
     data(){
         return {
-            users: []
+            users: [],
+            pendingUsers: []
         }
     },
     created() {
@@ -91,7 +93,15 @@ export default {
             fetch('/api/users')
             .then(res => res.json())
             .then(data => {
-                this.users = data      
+                this.users = data    
+                this.getPendingUsers()  
+            })
+        },
+        getPendingUsers(){
+            fetch('/api/users/pending')
+            .then(res => res.json())
+            .then(data => {
+                this.pendingUsers = data      
             })
         },
         permisoAdmin(user, tipo, permiso){    

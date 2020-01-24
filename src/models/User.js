@@ -20,7 +20,8 @@ const User = new Schema({
         required: true
     },
     admin: Boolean,
-    turnos: Boolean
+    turnos: Boolean,
+    pending: Boolean
 });
 
 module.exports = mongoose.model('User', User);

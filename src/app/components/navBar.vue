@@ -13,7 +13,7 @@
                     <button type="button" class="btn btn-dark">Turnos</button>
                 </router-link>
                 <router-link to="/permisos">
-                    <button type="button" class="btn btn-dark">Permisos</button>
+                    <button type="button" v-if="user.admin == true" class="btn btn-dark">Permisos</button>
                 </router-link>
                 <button type="button" class="btn btn-dark" @click="cerrarSesion">Cerrar sesión</button>
                 <button class="btn btn-dark">{{user.nombre + " " + user.apellido}}</button>
@@ -34,7 +34,8 @@ export default {
             user: {
                 "email": '',
                 "nombre": '',
-                "apellido": ''
+                "apellido": '',
+                "admin": false
             }
         }
     },
@@ -63,6 +64,7 @@ export default {
                     this.user.email = data.user.email
                     this.user.nombre = data.user.nombre
                     this.user.apellido = data.user.apellido
+                    this.user.admin = data.user.admin
                 })
         }
     }
