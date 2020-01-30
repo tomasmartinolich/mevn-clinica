@@ -20,6 +20,12 @@ router.get('/:id', async (req, res) => {
     res.json(task);
 });
 
+//busca un doc. por DNI
+router.get('/DNI/:dni', async (req, res) => {
+    const task = await Task.findOne({'DNI':req.params.dni});
+    res.json(task);
+});
+
 
 //las rutas post son para que el navegador pueda enviar peticiones al servidor y el servidor los tome y almacene
 //almacenar datos

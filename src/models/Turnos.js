@@ -7,7 +7,9 @@ const Turno = new Schema({
     anio: Number,
     hora: Number,
     min: Number,
-    descripcion: String,
+    paciente: Number,
+    motivo: String,
+    obser: String,
     user: String
 });
 

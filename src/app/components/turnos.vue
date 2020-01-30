@@ -29,13 +29,21 @@
             <thead class="thead-dark">
                 <tr class="text-center">
                     <th>Hora</th>
-                    <th>Descripción</th>
+                    <th>Paciente</th>
+                    <th>Teléfono</th>
+                    <th>Cobertura</th>
+                    <th>Motivo de la consulta</th>
+                    <th>Observaciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="turno of turnosDia">
                     <td>{{turno.hora}}:{{turno.min}}<span v-if="turno.min === 0">0</span></td>
-                    <td>{{turno.descripcion}}</td>
+                    <td>{{turno.paciente}}</td>
+                    <td>{{turno.telefono}}</td>
+                    <td>{{turno.cobertura}}</td>
+                    <td>{{turno.motivo}}</td>
+                    <td>{{turno.obser}}</td>
                     <td><button @click="editON(turno._id)" class="btn btn-success">
                         Editar
                     </button>
@@ -58,8 +66,16 @@
 
             </div>
             <div class="form-group col-3">
-                <label for="descTurno" class="col">Descripción</label>
-                <input type="text" v-model="turno.descripcion" id="descTurno" class="col form-control">
+                <label for="descTurno" class="col">DNI del paciente</label>
+                <input type="number" v-model="turno.paciente" id="descTurno" class="col form-control">
+            </div>
+            <div class="form-group col-3">
+                <label for="motivo" class="col">Motivo de la consulta</label>
+                <input type="text" v-model="turno.motivo" id="motivo" class="col form-control">
+            </div>
+            <div class="form-group col-3">
+                <label for="obs" class="col">Observaciones</label>
+                <input type="text" v-model="turno.obser" id="obs" class="col form-control">
             </div>
             <button v-if="edit === false" class="btn btn-primary btn-block">Aceptar</button>
             <button v-else class="btn btn-primary btn-block">Actualizar</button>
@@ -76,13 +92,15 @@ import Datepicker from 'vuejs-datepicker';
 import {es} from 'vuejs-datepicker/dist/locale'
 
 class Turno {
-    constructor(dia, mes, anio, hora, min, descripcion, user) {
+    constructor(dia, mes, anio, hora, min, paciente, motivo, obser, user) {
         this.dia = dia
         this.mes = mes
         this.anio = anio
         this.hora = hora
         this.min = min
-        this.descripcion = descripcion
+        this.paciente = paciente
+        this.motivo = motivo
+        this.obser = obser
         this.user = user
     }
 }
@@ -121,7 +139,8 @@ export default {
                 "turnos": false
             },
             edit: false,
-            turnoToEdit: ''
+            turnoToEdit: '',
+            pacientes: []
         }
     },
     created(){
@@ -171,9 +190,12 @@ export default {
             .then(this.getTurnos(this.usuario))
         },
         checkUsr(){
-            this.usr_selected.nombre = this.userSelect.split(" ")[0]
-            this.usr_selected.apellido = this.userSelect.split(" ")[1]
-            if (this.usr_selected.nombre !== this.usuario.nombre && this.usr_selected.apellido !== this.usuario.apellido) {
+            if (this.userSelect !== null) {
+                this.usr_selected.nombre = this.userSelect.split(" ")[0]
+                this.usr_selected.apellido = this.userSelect.split(" ")[1]  
+            }
+            
+            if (this.usr_selected.nombre !== '' && this.usr_selected.nombre !== this.usuario.nombre && this.usr_selected.apellido !== this.usuario.apellido) {
                 console.log("usr_selected: " + this.usr_selected)
                 return this.usr_selected    
             } else{
@@ -243,7 +265,7 @@ export default {
             fetch('/api/turnos/turno/' +turno)
                 .then(res => res.json())
                 .then(data => {
-                    this.turno = new Turno(data.dia, data.mes, data.anio, data.hora, data.min, data.descripcion, data.user)
+                    this.turno = new Turno(data.dia, data.mes, data.anio, data.hora, data.min, data.paciente, data.motivo, data.obser, data.user)
                     this.turnoToEdit = data._id
             })
             
@@ -273,6 +295,18 @@ export default {
         turnos: function(){
             this.state.highlighted.dates = []
             this.turnos.forEach(this.resaltar)
+        },
+        turnosDia: function(){
+            for (let index = 0; index < this.turnosDia.length; index++) {
+                fetch('/api/tasks/DNI/' + this.turnosDia[index].paciente)
+                .then(res => res.json())
+                .then(data => {
+                    this.users = data
+                    this.turnosDia[index].paciente = data.nombre + " " + data.apellido 
+                    this.turnosDia[index].telefono = data.telefono 
+                    this.turnosDia[index].cobertura = data.cobertura   
+                })
+            }
         }
     },
     computed: {
