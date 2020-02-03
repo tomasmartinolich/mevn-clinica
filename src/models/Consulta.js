@@ -8,7 +8,10 @@ const Consulta = new Schema({
     enfermedadActual: String,
     examenFisico: String,
     conducta: String,
-    observaciones: String
+    observaciones: String,
+    username: String,
+    espec: String,
+    matriculas: String
 })
 
 module.exports = mongoose.model('Consulta', Consulta);

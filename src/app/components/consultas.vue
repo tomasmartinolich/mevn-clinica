@@ -71,7 +71,7 @@
                         </thead>
                         
                         <tbody>
-                            <tr v-for="consulta of consultas">
+                            <tr v-for="consulta of consultas" v-if="consulta.username == user.nombre + ' ' + user.apellido">
                                 <td>{{paciente.apellido + " " + paciente.nombre}}</td>
                                 <td>{{consulta.fConsulta}}</td>
                                 <td>{{consulta.motivo}}</td>
@@ -131,6 +131,19 @@
                   <b>Observaciones</b>
                   <textarea readonly class="form-control text-center" v-model="consulta.observaciones" rows="3"></textarea>  
                 </div>
+                <br><br>
+                <div class="row">
+                    <h2>{{consulta.username}}</h2><br>  
+                </div>
+                <div class="row">
+                    <h4>{{consulta.espec}}</h4><br>
+                </div>
+                <div class="row">
+                    <span>{{consulta.matriculas}}</span>
+                </div>
+                <div class="row">
+                <span></span>
+                </div>
             </div>
 
         </div>
@@ -140,7 +153,7 @@
 <script>
 
     class Consulta {
-        constructor(paciente, fConsulta, motivo, enfermedadActual, examenFisico, conducta, observaciones) {
+        constructor(paciente, fConsulta, motivo, enfermedadActual, examenFisico, conducta, observaciones, username, espec, matriculas) {
             this.paciente = 0
             this.fConsulta = fConsulta
             this.motivo = motivo
@@ -148,6 +161,9 @@
             this.examenFisico = examenFisico
             this.conducta = conducta
             this.observaciones = observaciones
+            this.username = username
+            this.espec = espec
+            this.matriculas = matriculas
         }
     }
 
@@ -174,6 +190,7 @@
         name: 'consultas',
         data() {
             return {
+                user: [],
                 consulta: new Consulta(),
                 consultas: [],
                 edit: false,
@@ -186,13 +203,32 @@
         created() {
             if (localStorage.getItem('token') === null) {
                 this.$router.push('/login')
+            }else{
+                this.getUser()
             }
             this.getPaciente(this.pacienteDNI)
         },
         methods: {
+            getUser(){
+                fetch('/api/users/profile', {
+                    method: 'GET',
+                    //body: JSON.stringify(this.task),
+                    headers: {
+                        'Accept': 'application/json',
+                        'token': localStorage.getItem('token'),
+                        'Content-type': 'application/json'
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        this.user.nombre = data.user.nombre
+                        this.user.apellido = data.user.apellido
+                        this.user.especialidad = data.user.especialidad
+                        this.user.matnac = data.user.matnac
+                        this.user.matprov = data.user.matprov
+                    })
+            },
             getPaciente(id) {
-                console.log("id de paciente:")
-                console.log(id)
                 fetch('/api/consultas/getPaciente/' +id)
                 .then(res => res.json())
                 .then(data => {
@@ -208,6 +244,9 @@
             },
             sendConsulta() {
                 this.consulta.paciente = this.pacienteDNI
+                this.consulta.username = this.user.nombre + " " + this.user.apellido
+                this.consulta.espec =   this.user.especialidad
+                this.consulta.matriculas = "M.N. " + this.user.matnac + " - M.P. " + this.user.matprov
                 if(this.edit === false) {
                     fetch('/api/consultas/' + this.pacienteDNI, {
                         method: 'POST',
@@ -244,22 +283,18 @@
                 fetch('/api/consultas/' + this.pacienteDNI)
                     .then(res => res.json())
                     .then(data => {
-                        data[0].fConsulta = new Date(data[0].fConsulta)
-                        console.log(data[0].fConsulta)
-                        console.log(typeof data[0].fConsulta)
-                        data[0].fConsulta = (data[0].fConsulta.getDate() + 1) + "/" + (data[0].fConsulta.getMonth() + 1) + "/" + data[0].fConsulta.getFullYear()
                         this.consultas = data
-
                     })
             },
             verConsulta(id){
                 fetch('/api/consultas/consulta/' +id)
                 .then(res => res.json())
                 .then(data => {
-                    this.consulta = new Consulta(data.paciente, data.fConsulta, data.motivo, data.enfermedadActual, data.examenFisico, data.conducta, data.observaciones)
+                    this.consulta = new Consulta(data.paciente, data.fConsulta, data.motivo, data.enfermedadActual, data.examenFisico, data.conducta, data.observaciones, data.username, data.espec, data.matriculas)
                     this.getfConsulta()
                 })  
                 this.seccion = 'vista'
+
             },
             deleteConsulta(id) {
                 fetch('/api/consultas/' + this.pacienteDNI + '/' + id, {
@@ -291,8 +326,15 @@
                 let fConAnio = fCon.getFullYear()
                 fCon = fConDia.toString() + "/" + fConMes.toString() + "/" + fConAnio.toString()
                 this.consulta.fConsulta = fCon
-                console.log("fConsulta: " + this.consulta.fConsulta)
             },
+        },
+        watch: {
+            consultas: function(){
+                for (let index = 0; index < this.consultas.length; index++) {
+                        this.consultas[index].fConsulta = new Date(this.consultas[index].fConsulta)
+                        this.consultas[index].fConsulta = (this.consultas[index].fConsulta.getDate() + 1) + "/" + (this.consultas[index].fConsulta.getMonth() + 1) + "/" + this.consultas[index].fConsulta.getFullYear()
+                }
+            }
         }
     }
 

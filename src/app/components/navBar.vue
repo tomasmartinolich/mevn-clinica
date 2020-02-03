@@ -35,6 +35,9 @@ export default {
                 "email": '',
                 "nombre": '',
                 "apellido": '',
+                "especialidad": '',
+                "matnac": 0,
+                "matprov": 0,
                 "admin": false
             }
         }
@@ -64,7 +67,10 @@ export default {
                     this.user.email = data.user.email
                     this.user.nombre = data.user.nombre
                     this.user.apellido = data.user.apellido
-                    this.user.admin = data.user.admin
+                    this.user.especialidad = data.user.especialidad
+                    this.user.matnac = data.user.matnac
+                    this.user.matprov = data.user.matprov
+                    this.user.admin = data.user.admin   
                 })
         }
     }

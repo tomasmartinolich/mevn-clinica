@@ -34,12 +34,24 @@
                     <input type="text" id="apellido" v-model="user.apellido" placeholder="Ingrese su apellido" class="form-control">
                 </div>
                 <div class="form-group row">
+                    <label for="espec" class="text-center">Especialidad</label>
+                    <input type="text" id="espec" v-model="user.especialidad" placeholder="Ingrese su apellido" class="form-control">
+                </div>
+                <div class="form-group row">
+                    <label for="matnac" class="text-center">Matrícula nacional</label>
+                    <input type="number" id="matnac" v-model="user.matnac" placeholder="Ingrese su apellido" class="form-control">
+                </div>
+                <div class="form-group row">
+                    <label for="matprov" class="text-center">Matrícula provincial</label>
+                    <input type="number" id="matprov" v-model="user.matprov" placeholder="Ingrese su apellido" class="form-control">
+                </div>
+                <div class="form-group row">
                     <label for="password">Contraseña</label>
                     <input type="password" id="password" v-model="user.pass" placeholder="Ingrese su contraseña" class="form-control">
                 </div>
                 <div class="form-group row">
                     <label for="password2">Repetir contraseña</label>
-                    <input type="password" id="password2" placeholder="Repita la contraseña ingresada" class="form-control">
+                    <input type="password" id="password2" v-model="pass2" placeholder="Repita la contraseña ingresada" class="form-control">
                 </div>
                 <button class="btn btn-success btn-block">Registrar</button>
             </form>
@@ -53,10 +65,13 @@ import Vue from 'vue';
 import EventBus from './event-bus.js';
 
 class User {
-    constructor(nombre,apellido,email,pass) {
+    constructor(nombre,apellido,email, especialidad, matnac, matprov, pass) {
         this.nombre = nombre
         this.apellido = apellido
         this.email = email
+        this.especialidad = especialidad
+        this.matnac = matnac
+        this.matprov = matprov
         this.pass = pass
     }
 }
@@ -67,7 +82,8 @@ export default {
         return{
             user: new User(),
             loginForm: true,
-            ok: false
+            ok: false,
+            pass2: ''
         }
     },
     methods: {
@@ -87,28 +103,34 @@ export default {
                     this.user = localStorage.getItem('token')
                     EventBus.$emit('logueado', this.user);
                     this.$router.push('/'); 
-                }   
-                if (data.status === 403) {
+                }else{
                     alert(data.message)
-                }            
+                }          
             })
         },
         register(){
-            fetch('/api/users/registro', {
-                method: 'POST',
-                body: JSON.stringify(this.user),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-type': 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert(data.message)
-            })
-            .then(this.user = new User())
+            if (this.user.pass === this.pass2) {
+                fetch('/api/users/registro', {
+                    method: 'POST',
+                    body: JSON.stringify(this.user),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message)
+                })
+                .then(this.user = new User())     
+            } else {
+                alert("No ha repetido correctamente la contraseña.")
+            }
+            
         },
         formSwitch(){
+            this.user = new User()
+            this.pass2 = ''
             this.loginForm = !this.loginForm
         }
     }

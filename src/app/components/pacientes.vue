@@ -66,6 +66,10 @@
                             <textarea class="form-control text-center" v-model="task.antecPersonales" rows="3"></textarea>
                         </div>
                     </div>
+                    <div class="row">
+                        <b>Observaciones</b>
+                        <textarea class="form-control text-center" v-model="task.obser" rows="3"></textarea>
+                    </div>
                     <template v-if="edit === false">
                         <button class="btn btn-primary btn-block">Aceptar</button>
                     </template>
@@ -81,7 +85,9 @@
         <div class="container" v-if="seccion === 'tabla'">
             <div class="col">
                 <div class="row py-md-2 px-md-2">    
-                    <button type="button" class="btn btn-primary" @click="showFormPacientes">Nuevo paciente</button>       
+                    <button type="button" class="btn btn-primary col-2" @click="showFormPacientes">Nuevo paciente</button>    
+                    <div class="col-4"></div>
+                    <input type="text" v-model="filtro" placeholder="Buscar paciente..." class="col-2">   
                 </div>
                 <table class="table table-bordered table-hover">
                     <thead class="thead-dark">
@@ -95,14 +101,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="task of tasks">
+                        <tr v-for="task of tasks" v-if="task.apellido.includes(filtro) || task.nombre.includes(filtro)">
                             <td>{{task.apellido + " " + task.nombre}}</td>
                             <td>{{task.fNacimiento}}</td>
                             <td>{{task.pediatra}}</td>
                             <td>{{task.localidad}}</td>
                             <td>{{task.telefono}}</td>
                             <td>
-                                <button @click="verPaciente(task._id)" class="btn btn-secondary">
+                                <button @click="verPaciente(task._id, 'vista')" class="btn btn-secondary">
                                     Ver
                                 </button>
                                 <button @click="editTask(task._id)" class="btn btn-success">
@@ -118,6 +124,9 @@
                                         Historia clínica
                                     </button>
                                 </router-link>
+                                <button @click="verPaciente(task._id, 'ficha')" class="btn btn-info">
+                                    Ficha
+                                </button>
                                 <button class="btn btn-warning" @click="getSpecificTask(task._id)">Espera</button>                                   
                             </td>
                         </tr>
@@ -163,6 +172,16 @@
                 </div>
             </div>
             <div class="row">
+                <b>Observaciones:</b>
+                <span>{{task.obser}}</span><br>
+            </div>
+            
+        </div>
+
+            <!-- VISTA FICHA PACIENTE -->
+        <div class="container" v-if="seccion === 'ficha'">
+            <button type="button" class="btn btn-dark" @click="seccion = 'tabla'">Volver</button>
+            <div class="row">
                 <div class="form-group col-3">
                     <b>Antecedentes Familiares</b>
                     <textarea readonly v-model="task.antecFamiliares" rows="3" class="form-control-plaintext"></textarea>
@@ -181,7 +200,7 @@
 var moment = require('moment');
 import io from 'socket.io-client';
     class Task {
-        constructor(nombre, apellido, cobertura, nAfiliado, plan, antecFamiliares, antecPersonales, pediatra, fNacimiento, DNI, localidad, direccion, telefono) {
+        constructor(nombre, apellido, cobertura, nAfiliado, plan, antecFamiliares, antecPersonales, pediatra, fNacimiento, DNI, localidad, direccion, telefono, obser) {
             this.nombre = nombre
             this.apellido = apellido
             this.cobertura = cobertura
@@ -196,6 +215,7 @@ import io from 'socket.io-client';
             this.direccion = direccion
             this.telefono = telefono
             this.salaEspera = false
+            this.obser = obser
         }
     }
 
@@ -204,6 +224,7 @@ import io from 'socket.io-client';
  //       props: ['listaEspera'],
         data() {
             return {
+                filtro: '',
                 user: {
                     "email": "",
                     "nombre": "",
@@ -305,12 +326,12 @@ import io from 'socket.io-client';
                         this.taskToList = data
                     })
             },
-            verPaciente(id){
+            verPaciente(id, seccion){
                 fetch('/api/tasks/' +id)
                     .then(res => res.json())
                     .then(data => {
-                        this.task = new Task(data.nombre, data.apellido, data.cobertura, data.nAfiliado, data.plan, data.antecFamiliares, data.antecPersonales, data.pediatra, data.fNacimiento, data.DNI, data.localidad, data.direccion, data.telefono)
-                        this.seccion = 'vista'
+                        this.task = new Task(data.nombre, data.apellido, data.cobertura, data.nAfiliado, data.plan, data.antecFamiliares, data.antecPersonales, data.pediatra, data.fNacimiento, data.DNI, data.localidad, data.direccion, data.telefono, data.obser)
+                        this.seccion = seccion
                         this.getfNacimiento()
                     })
             },
@@ -333,7 +354,7 @@ import io from 'socket.io-client';
                 fetch('/api/tasks/' +id)
                     .then(res => res.json())
                     .then(data => {
-                        this.task = new Task(data.nombre, data.apellido, data.cobertura, data.nAfiliado, data.plan, data.antecFamiliares, data.antecPersonales, data.pediatra, data.fNacimiento, data.DNI, data.localidad, data.direccion, data.telefono)
+                        this.task = new Task(data.nombre, data.apellido, data.cobertura, data.nAfiliado, data.plan, data.antecFamiliares, data.antecPersonales, data.pediatra, data.fNacimiento, data.DNI, data.localidad, data.direccion, data.telefono, data.obser)
                         this.taskToEdit = data._id
                         this.edit = true
                     })

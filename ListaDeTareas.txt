@@ -1,12 +1,3 @@
-PRIORIDAD:
-!# Crear seccion perfil de usuario y permisos para crear turnos y aceptar usuarios registrados
-# Antecedentes va en tabla pacientes, en la consulta solo se muestra
-# Agregar filtros/paginación/búsqueda a las tablas
-# Turnos: 
-    - La tabla de turnos tiene que estar ordenada por horario
-    - Que muestre turnos del usuario que está logueado, o que te deje elegir en caso de ser un usuario con permiso de turnos
-
-
+Pacientes: agregar campo observaciones
 ¿El usuario solo ve las consultas que hizo?
-¿Qué onda la firma?
-¿Antecedentes qué onda?
+Las nuevas consultas se ven con la fecha mal

@@ -25,7 +25,8 @@
 
     <div v-if="seccion === 'tabla'">
         <button class="btn btn-primary" @click="seccion = 'form'">Nuevo turno</button>
-        <table class="table table-bordered table-hover">
+        <button class="btn btn-warning" @click="sortTable()">Ordenar turnos</button>
+        <table id="tablaTurnos" class="table table-bordered table-hover">
             <thead class="thead-dark">
                 <tr class="text-center">
                     <th>Hora</th>
@@ -61,7 +62,7 @@
                 <label for="horaTurno" class="col">Seleccionar hora</label>
                 <div class="row">
                     <input type="number" v-model="turno.hora" id="horaTurno" class="form-control col-1" maxlength="2" size="2" placeholder="hs">
-                    <input type="number" v-model="turno.min" class="form-control col-1" maxlength="2" size="2" placeholder="min">
+                    <input type="number" v-model="turno.min" value=00 class="form-control col-1" maxlength="2" size="2" placeholder="min">
                 </div>
 
             </div>
@@ -196,7 +197,6 @@ export default {
             }
             
             if (this.usr_selected.nombre !== '' && this.usr_selected.nombre !== this.usuario.nombre && this.usr_selected.apellido !== this.usuario.apellido) {
-                console.log("usr_selected: " + this.usr_selected)
                 return this.usr_selected    
             } else{
                 return this.usuario
@@ -204,11 +204,10 @@ export default {
         },
         selectUser(){
             this.turnos = []
+            this.turnosDia = []
             this.getTurnos(this.checkUsr())
         },
         getTurnos(usuario){ 
-            console.log("getTurnos usuario:")
-            console.log(usuario.nombre + " " + usuario.apellido)
             fetch('/api/turnos/' + usuario.nombre + " " + usuario.apellido)
             .then(res => res.json())
             .then(data => {
@@ -282,6 +281,44 @@ export default {
             .then(data => {
                 this.getTurnosDia(this.checkUsr())
             })
+        },
+        sortTable() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("tablaTurnos");
+            switching = true;
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                //start by saying there should be no switching:
+                shouldSwitch = false;
+                /*Get the two elements you want to compare,
+                one from current row and one from the next:*/
+                x = rows[i].getElementsByTagName("TD")[0];
+                y = rows[i + 1].getElementsByTagName("TD")[0];
+                
+                let xx = parseInt(x.innerHTML.split(":")[0] * 100) + parseInt(x.innerHTML.split(":")[1])
+                let yy = parseInt(y.innerHTML.split(":")[0] * 100) + parseInt(y.innerHTML.split(":")[1])
+                
+                //check if the two rows should switch place:
+                if (Number(xx) > Number(yy)) {
+                    //if so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                }
+                }
+                if (shouldSwitch) {
+                /*If a switch has been marked, make the switch
+                and mark that a switch has been done:*/
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                }
+            }
         }
     },
     watch: {
@@ -296,48 +333,19 @@ export default {
             this.state.highlighted.dates = []
             this.turnos.forEach(this.resaltar)
         },
-        turnosDia: function(){
+        turnosDia: function(){   
             for (let index = 0; index < this.turnosDia.length; index++) {
                 fetch('/api/tasks/DNI/' + this.turnosDia[index].paciente)
                 .then(res => res.json())
                 .then(data => {
-                    this.users = data
+                    //this.users = data
                     this.turnosDia[index].paciente = data.nombre + " " + data.apellido 
                     this.turnosDia[index].telefono = data.telefono 
                     this.turnosDia[index].cobertura = data.cobertura   
                 })
             }
-        }
-    },
-    computed: {
-        /*
-        turnosOrdenados: function(){
-            let turnosOrdenados = []
-            this.turnosDia.forEach(arrayHoras)
-            function arrayHoras(turno, index){
-                turnosOrdenados[index] = turno.hora * 100 + turno.min
-            }
-            console.log(turnosOrdenados)
-           
-           -----------
-           if (typeof this.turnosDia[0] !== 'undefined') {
-              console.log(this.turnosDia[0].hora)  
-            }
-            let turnosOrdenados = this.turnosDia.sort(function (a, b) {
-                console.log("a: " + (a.hora * 100 + a.min))
-                console.log("b: " + (b.hora * 100 + b.min))
-                if ((a.hora * 100 + a.min) > (b.hora * 100 + b.min)) {
-                    return 1;
-                }
-                if ((a.hora * 100 + a.min) < (b.hora * 100 + b.min)) {
-                    return -1;
-                }
-                // a must be equal to b
-                return 0;
-            });
-            ------------
-            return turnosOrdenados
-        }*/
+            this.sortTable()
+        },
     }
 }
 </script>

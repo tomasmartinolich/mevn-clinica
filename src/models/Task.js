@@ -15,7 +15,8 @@ const Task = new Schema({        //este esquema dice a mongo cómo van a lucir l
     localidad: String,
     direccion: String,
     telefono: Number,
-    salaEspera: Boolean
+    salaEspera: Boolean,
+    obser: String
 });
 
 module.exports = mongoose.model('Task', Task);

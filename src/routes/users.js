@@ -25,6 +25,9 @@ users.post('/registro', async (req, res, next) => {
                         nombre: req.body.nombre,
                         apellido: req.body.apellido,
                         email: req.body.email,
+                        especialidad: req.body.especialidad,
+                        matnac: req.body.matnac,
+                        matprov: req.body.matprov,
                         pass: hash,
                         admin: false,
                         turnos: false,
@@ -74,6 +77,9 @@ users.post('/login', (req, res, next) => {
                     nombre: user.nombre,
                     apellido: user.apellido,
                     email: user.email,
+                    especialidad: user.especialidad,
+                    matnac: user.matnac,
+                    matprov: user.matprov,
                     userId: user._id,
                     admin: user.admin,
                     turnos: user.turnos,
@@ -81,7 +87,7 @@ users.post('/login', (req, res, next) => {
                 }, 
                     process.env.JWT_KEY,
                     {
-                        expiresIn: "24h"
+                        expiresIn: "12h"
                     }
                 );
                 return res.status(200).json({
@@ -97,9 +103,8 @@ users.post('/login', (req, res, next) => {
         });
     })
     .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
+        return res.status(401).json({
+            message: 'Autenticación fallida'
         });
     })
 });
@@ -119,6 +124,9 @@ users.get('/profile', (req, res, next) => {
                     email: user.email,
                     nombre: user.nombre,
                     apellido: user.apellido,
+                    especialidad: user.especialidad,
+                    matnac: user.matnac,
+                    matprov: user.matprov,
                     admin: user.admin,
                     turnos: user.turnos,
                     pending: user.pending
@@ -130,13 +138,13 @@ users.get('/profile', (req, res, next) => {
 
 //Get users aprobados
 users.get('/', async (req, res) => {       
-    const users = await User.find({'pending': false}).select('nombre apellido admin turnos pending');   
+    const users = await User.find({'pending': false}).select('nombre apellido especialidad matnac matprov admin turnos pending');   
     res.json(users);   
 });
 
 //Get pending users
 users.get('/pending', async (req, res) => {       
-    const users = await User.find({'pending': true}).select('nombre apellido admin turnos pending');   
+    const users = await User.find({'pending': true}).select('nombre apellido especialidad matnac matprov admin turnos pending');   
     res.json(users);   
 });
 
