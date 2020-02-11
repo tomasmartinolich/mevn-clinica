@@ -1,3 +1,0 @@
-Pacientes: agregar campo observaciones
-¿El usuario solo ve las consultas que hizo?
-Las nuevas consultas se ven con la fecha mal
