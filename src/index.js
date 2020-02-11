@@ -25,7 +25,7 @@ mongoose.connect(process.env.DB_URL)
     .catch(err => console.error(err));
 
 //Settings
-app.set('port', process.env.PORT || 3000);      // process.env.PORT sirve para que tome el puerto que te da el sist. operativo. Si no hay, que use 3000
+//app.set('port', process.env.PORT || 3000);      // process.env.PORT sirve para que tome el puerto que te da el sist. operativo. Si no hay, que use 3000
 
 //Middlewares                   (funciones que se ejecutan antes de que entren a las rutas)
 app.use(morgan('dev'));         //cuando recibas peticiones del navegador en el servidor, el servidor te pueda mostrar qué peticiones ha pedido el navegador
@@ -46,6 +46,6 @@ app.use(express.static(__dirname + '/public'));         // __dirname te tira la 
 const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
 
-server.listen(port, host, () =>{
+server.listen(port, '0.0.0.0', () =>{
     console.log("El servidor está funcionando");
 })
