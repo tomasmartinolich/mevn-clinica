@@ -6,6 +6,7 @@
                 <a class="navbar-brand">CEDYT Administrador</a>
             </div>
             <ul class="nav navbar-nav">
+                
                 <router-link to="/">
                     <button type="button" class="btn btn-dark">Pacientes</button>
                 </router-link>

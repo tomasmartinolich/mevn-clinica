@@ -6,7 +6,6 @@ const app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-server.listen(3000)
 
 io.on('connection', function (socket) {
     // socket.emit('actualizarLista', { hello: 'world' });
@@ -20,10 +19,8 @@ io.on('connection', function (socket) {
     });
 })
 
-
-
-
-mongoose.connect('mongodb://localhost/mevn-database')
+//mongoose.connect("mongodb://localhost/mevn-database")
+mongoose.connect(process.env.DB_URL)
     .then(db => console.log("DB is connected."))
     .catch(err => console.error(err));
 
@@ -44,9 +41,11 @@ app.use('/api/turnos', require('./routes/turnos'))
 //Static files (maneras de enviar archivos al frontend/navegador) (sería lo de la carpeta public)
 app.use(express.static(__dirname + '/public'));         // __dirname te tira la dirección exacta donde está este archivo
 
-//Server is listening
-/*
-app.listen(app.get('port'), () => {
-    console.log('Server on port', app.get('port'));
-});
-*/
+
+//Leer localhost de variables y puerto
+const host = process.env.HOST || '0.0.0.0';
+const port = process.env.PORT || 3000;
+
+server.listen(port, host, () =>{
+    console.log("El servidor está funcionando");
+})

@@ -87,7 +87,7 @@
                 <div class="row py-md-2 px-md-2">    
                     <button type="button" class="btn btn-primary col-2" @click="showFormPacientes">Nuevo paciente</button>    
                     <div class="col-4"></div>
-                    <input type="text" v-model="filtro" placeholder="Buscar paciente..." class="col-2">   
+                    <input type="text" v-model="filtro" placeholder="Buscar paciente..." class="col-2 form-control mr-sm-2">   
                 </div>
                 <table class="table table-bordered table-hover">
                     <thead class="thead-dark">
@@ -97,21 +97,23 @@
                             <th>Pediatra</th>
                             <th>Localidad</th>
                             <th>Teléfono</th>
+                            <th>DNI</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="task of tasks" v-if="task.apellido.includes(filtro) || task.nombre.includes(filtro)">
+                        <tr v-for="task of tasks" v-if="task.apellido.toLowerCase().includes(filtro.toLowerCase()) || task.nombre.toLowerCase().includes(filtro.toLowerCase())">
                             <td>{{task.apellido + " " + task.nombre}}</td>
                             <td>{{task.fNacimiento}}</td>
                             <td>{{task.pediatra}}</td>
                             <td>{{task.localidad}}</td>
                             <td>{{task.telefono}}</td>
+                            <td>{{task.DNI}}</td>
                             <td>
-                                <button @click="verPaciente(task._id, 'vista')" class="btn btn-secondary">
+                                <button @click="verPaciente(task._id, 'vista')" class="btn btn-secondary btn-sm">
                                     Ver
                                 </button>
-                                <button @click="editTask(task._id)" class="btn btn-success">
+                                <button @click="editTask(task._id)" class="btn btn-success btn-sm">
                                     Editar
                                 </button>
                                 <!--
@@ -120,14 +122,14 @@
                                 </button>
                                 -->
                                 <router-link :to="{ name: 'paciente', params: {id: task.DNI} }">
-                                    <button class="btn btn-info">
+                                    <button class="btn btn-info btn-sm">
                                         Historia clínica
                                     </button>
                                 </router-link>
-                                <button @click="verPaciente(task._id, 'ficha')" class="btn btn-info">
+                                <button @click="verPaciente(task._id, 'ficha')" class="btn btn-info btn-sm">
                                     Ficha
                                 </button>
-                                <button class="btn btn-warning" @click="getSpecificTask(task._id)">Espera</button>                                   
+                                <button class="btn btn-warning btn-sm" @click="getSpecificTask(task._id)">Espera</button>                                   
                             </td>
                         </tr>
                     </tbody>

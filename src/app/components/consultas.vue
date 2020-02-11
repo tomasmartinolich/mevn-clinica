@@ -63,16 +63,16 @@
                     <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr class="text-center">
-                                <th>Paciente</th>
+                                <th>Consulta</th>
                                 <th>Fecha de consulta</th>
-                                <th>Motivo de consulta</th>
+                                <th>Motivo de consulta</th>                               
                                 <th>Opciones</th>
                             </tr>
                         </thead>
                         
                         <tbody>
-                            <tr v-for="consulta of consultas" v-if="consulta.username == user.nombre + ' ' + user.apellido">
-                                <td>{{paciente.apellido + " " + paciente.nombre}}</td>
+                            <tr v-for="consulta of consultas">
+                                <td>{{consulta.username}}</td>
                                 <td>{{consulta.fConsulta}}</td>
                                 <td>{{consulta.motivo}}</td>
                                 <td>

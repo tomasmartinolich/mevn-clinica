@@ -1,5 +1,7 @@
 {
     "env": {
-        "JWT_KEY": "secret"
+        "JWT_KEY": "secret",
+        "DB_URL": "mongodb+srv://admin:admin@cedyt-5h8tk.mongodb.net/test?retryWrites=true&w=majority",
+        "HOST": "localhost"
     }
 }

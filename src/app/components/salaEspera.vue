@@ -36,13 +36,10 @@ export default {
             fetch('/api/listaEspera')
                 .then(res => res.json())
                 .then(data => {
-                    console.log("get lista espera:")
                         this.enEspera = data
                 })
         },
         quitarDeEspera(paciente){      
-            console.log("quitar 1:")
-            console.log(paciente) 
             fetch('/api/listaEspera/' + paciente._id, {
                 method: 'PUT',
                 body: JSON.stringify(this.task),
@@ -62,8 +59,6 @@ export default {
             this.getListaEspera();
         },
         quitarDeLista(data){
-            console.log("quitar 2:")
-            console.log(data)
             this.enEspera.pop(data)
         },
         agregarALista(paciente){
