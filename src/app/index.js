@@ -12,9 +12,12 @@ import turnos from './components/turnos.vue';
 import permisos from './components/permisos.vue';
 Vue.use(VueRouter);
 
+const host = process.env.HOST || 'localhost';
+const port = process.env.PORT || 3000;
+
 Vue.use(new VueSocketIO({
     debug: true,
-    connection: 'http://localhost:3000'
+    connection: host+":"+ port
     //options: { path: "/" } //Optional options
 }))
 

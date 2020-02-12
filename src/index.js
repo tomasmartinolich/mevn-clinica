@@ -25,7 +25,7 @@ mongoose.connect(process.env.DB_URL)
     .catch(err => console.error(err));
 
 //Settings
-app.set('port', process.env.PORT || 3000);      // process.env.PORT sirve para que tome el puerto que te da el sist. operativo. Si no hay, que use 3000
+//app.set('port', process.env.PORT || 3000);      // process.env.PORT sirve para que tome el puerto que te da el sist. operativo. Si no hay, que use 3000
 
 //Middlewares                   (funciones que se ejecutan antes de que entren a las rutas)
 app.use(morgan('dev'));         //cuando recibas peticiones del navegador en el servidor, el servidor te pueda mostrar qué peticiones ha pedido el navegador
